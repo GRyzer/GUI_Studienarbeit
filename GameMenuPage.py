@@ -82,10 +82,11 @@ class FormWidget(FormWidgetIF):
 
 class GameMenuWindow(QtWidgets.QWidget, FormWidget):
     main_menu_window = QtCore.pyqtSignal()
-    game_window = QtCore.pyqtSignal(int)
+    game_window = QtCore.pyqtSignal(int, str)
 
     def __init__(self, username):
         super(GameMenuWindow, self).__init__()
+        self.username = username
         self.setupUi(self, username)
         self.connect_buttons_to_game()
 
@@ -95,7 +96,7 @@ class GameMenuWindow(QtWidgets.QWidget, FormWidget):
         self.main_menu_button.clicked.connect(self.go_to_main_menu)
 
     def go_to_game(self, game_enum_number):
-        self.game_window.emit(game_enum_number.value)
+        self.game_window.emit(game_enum_number.value, self.username)
 
     def go_to_main_menu(self):
         self.main_menu_window.emit()
