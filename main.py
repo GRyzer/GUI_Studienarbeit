@@ -5,9 +5,10 @@ from MainMenuPage import WindowOne
 from LogInPage import LogInWindow
 from accountManagement import AccountManagement
 from GameMenuPage import GameMenuWindow
-from GamesEnum import Game
+from GameController import GameController
 
 # TODO language change german english
+# TODO create an Interface for DatabaseManagement
 
 
 class Controller:
@@ -16,7 +17,7 @@ class Controller:
         self.signup_window = None
         self.login_window = None
         self.game_menu_window = None
-        self.game_window = None
+        self.game_controller = None
         self.account = AccountManagement()
 
     def show_main(self):
@@ -53,32 +54,20 @@ class Controller:
             username = 'Anonymous'
         self.game_menu_window = GameMenuWindow(username=username)
         self.game_menu_window.main_menu_window.connect(self.show_main)
-        self.game_menu_window.game_window.connect(self.show_selected_game_page)
+        self.game_menu_window.game_window.connect(self.game_controller_page)
         if self.signup_window is not None:
             self.signup_window.hide()
         if self.login_window is not None:
             self.login_window.hide()
-        if self.game_window is not None:
-            self.game_window.hide()
         self.main_menu.hide()
         self.game_menu_window.show()
 
-    def show_selected_game_page(self, selected_game):
-        if selected_game is Game.One.value:
-            # self.game_window = Game1()
-            print("game one")
-        elif selected_game is Game.Two.value:
-            print("game two")
-        elif selected_game is Game.Three.value:
-            print("game three")
-        elif selected_game is Game.Four.value:
-            print("game four")
-        else:
-            raise ValueError
-        self.game_window.game_menu_window.connect(self.show_game_menu_page)
+    def game_controller_page(self, selected_game, username):
+        self.game_controller = GameController(selected_game, username)
+        self.game_controller.game_menu_window.connect(self.show_game_menu_page)
         self.game_menu_window.hide()
-        self.game_window.show()
-        return None
+        self.game_controller.start()
+
 
 if __name__ == '__main__':
     # Back up the reference to the exceptionhook
