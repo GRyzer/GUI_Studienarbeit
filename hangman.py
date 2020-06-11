@@ -1,11 +1,11 @@
 from functools import partial
 from itertools import chain
 import string
-import random
 
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
+import random_word
 
 from formWidget import FormWidgetIF
 from gameDatabaseManagement import GameDatabaseManagement
@@ -21,10 +21,14 @@ class FormWidget(FormWidgetIF):
         self.searched_word_label = None
         self.horizontalLayout = None
         self.horizontalLayout_2 = None
+        self.horizontalLayout3 = None
+        self.formLayout2 = None
         self.gridLayout = None
         self.used_letters_label = None
         self.selected_level = None
         self.trials_left_label = None
+        self.game_menu_button = None
+        self.level_selection_button = None
 
     def setupUi(self, hangman_page, searched_word, used_letters, hangman_start_picture, allowed_trials, selected_level):
         hangman_page.setMinimumSize(self.get_min_widget())
@@ -53,7 +57,6 @@ class FormWidget(FormWidgetIF):
 
         for index, letter in enumerate(string.ascii_uppercase):
             button = QPushButton(letter, hangman_page)
-            # button.setStyleSheet("border: 1px solid black;")
             self.alphabet_button_list.append(button)
             self.gridLayout.addWidget(button, index // 4, index % 4)
 
@@ -76,6 +79,24 @@ class FormWidget(FormWidgetIF):
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
 
+        self.horizontalLayout3 = QHBoxLayout(hangman_page)
+
+        self.formLayout2 = QFormLayout(hangman_page)
+        self.formLayout2.setFormAlignment(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing)
+        self.formLayout2.setContentsMargins(-1, -1, 20, 20)
+
+        self.game_menu_button = QPushButton('return to game menu', hangman_page)
+        self.game_menu_button.setSizePolicy(self.get_size_policy(self.game_menu_button))
+        self.game_menu_button.setFont(QFont('', 12))
+        self.formLayout2.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.game_menu_button)
+
+        self.level_selection_button = QPushButton('go to level selection', hangman_page)
+        self.level_selection_button.setSizePolicy(self.get_size_policy(self.level_selection_button))
+        self.level_selection_button.setFont(QFont('', 12))
+        self.formLayout2.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.level_selection_button)
+
+        self.horizontalLayout3.addLayout(self.formLayout2)
+        self.verticalLayout.addLayout(self.horizontalLayout3)
         QtCore.QMetaObject.connectSlotsByName(hangman_page)
 
 
@@ -143,8 +164,12 @@ class HangmanWindow(QtWidgets.QWidget, FormWidget):
 
     @staticmethod
     def get_searched_word():
-        game_words = ["TIGER", "ELEPHANT", "UHU"]
-        word = random.choice(game_words)
+        r = random_word.RandomWords()
+        while True:
+            word = r.get_random_word()
+            if word.isalpha():
+                break
+        word = word.upper()
         blank_word = ""
         for _ in word:
             blank_word += "_ "
@@ -174,6 +199,8 @@ class HangmanWindow(QtWidgets.QWidget, FormWidget):
     def connect_buttons_to_game(self):
         for button in self.alphabet_button_list:
             button.clicked.connect(partial(self.update_game, button.text()))
+        self.game_menu_button.clicked.connect(self.goto_game_menu)
+        self.level_selection_button.clicked.connect(self.goto_level_selection)
 
     def update_game(self, letter):
         if self.letter_not_in_searched_word(letter):
@@ -231,7 +258,7 @@ class HangmanWindow(QtWidgets.QWidget, FormWidget):
         elif self.trials_left == 0:
             msg_box = QMessageBox()
             msg_box.setWindowTitle("Lose")
-            msg_box.setText("Unfortunately you lost!")
+            msg_box.setText(f"Unfortunately you lost! The searched word was: {self.searched_word}")
             msg_box.addButton(QPushButton('Go to game menu'), QMessageBox.AcceptRole)
             msg_box.addButton(QPushButton('Play level again'), QMessageBox.RejectRole)
             msg_box.addButton(QPushButton('Go to level selection'), QMessageBox.DestructiveRole)
