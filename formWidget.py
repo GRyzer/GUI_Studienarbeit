@@ -26,4 +26,3 @@ class FormWidgetIF:
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(q_object.sizePolicy().hasHeightForWidth())
         return size_policy
-
