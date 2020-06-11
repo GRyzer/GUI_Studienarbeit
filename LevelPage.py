@@ -1,10 +1,7 @@
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from functools import partial
 from formWidget import FormWidgetIF
-from gameDatabaseManagement import GameDatabaseManagement
-from GamesEnum import game_database
 
 
 class FormWidget(FormWidgetIF):
@@ -19,6 +16,7 @@ class FormWidget(FormWidgetIF):
         self.formLayout2 = None
         self.previous_window_button = None
         self.next_window_button = None
+        self.radio_button_group = None
 
     def setupUi(self, level_page, username, unlocked_level_number):
         level_page.setMinimumSize(self.get_min_widget())
@@ -48,7 +46,7 @@ class FormWidget(FormWidgetIF):
 
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
-
+        self.radio_button_group = QButtonGroup()
         for row in range(0, 5):
             for column in range(1, 5):
                 button = QRadioButton(f"Level {column + row * 4}", level_page)
@@ -60,6 +58,7 @@ class FormWidget(FormWidgetIF):
                     button.setToolTip("Not unlocked.")
                 self.level_rbutton_list.append(button)
                 self.gridLayout.addWidget(button, row, column)
+                self.radio_button_group.addButton(button, column + row * 4)
 
         self.verticalLayout.addLayout(self.gridLayout)
         spacer_up = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
@@ -92,42 +91,24 @@ class FormWidget(FormWidgetIF):
 
 
 class LevelWindow(QtWidgets.QWidget, FormWidget):
-    previous_window = QtCore.pyqtSignal(str)
-    next_window = QtCore.pyqtSignal(int, str)
+    previous_window = QtCore.pyqtSignal()
+    next_window = QtCore.pyqtSignal(int)
+    unlock_all_levels_signal = QtCore.pyqtSignal()
 
-    def __init__(self, game_name, username):
+    def __init__(self, username, unlocked_level_number):
         super(LevelWindow, self).__init__()
-        unlocked_level_number = self.get_unlocked_level(game_name, username)
-        self.shortcut = QShortcut(QKeySequence("Ctrl+U"), self)
         self.setupUi(self, username, unlocked_level_number)
-        self.shortcut.activated.connect(partial(self.unlock_all_levels, game_name, username))
-        self.previous_window_button.clicked.connect(partial(self.go_to_previous_window, username))
-        self.next_window_button.clicked.connect(partial(self.go_to_game, game_name, username))
+        self.shortcut = QShortcut(QKeySequence("Ctrl+U"), self)
+        self.shortcut.activated.connect(self.unlock_all_levels)
+        self.previous_window_button.clicked.connect(self.go_to_previous_window)
+        self.next_window_button.clicked.connect(self.go_to_game)
 
-    def get_unlocked_level(self, game_name, username):
-        file_path = game_database[game_name]
-        database_manager = GameDatabaseManagement(file_path, username)
-        unlocked_level_number = database_manager.get_unlocked_level()
-        return unlocked_level_number
+    def go_to_previous_window(self):
+        self.previous_window.emit()
 
-    def go_to_previous_window(self, username):
-        self.previous_window.emit(username)
+    def go_to_game(self):
+        self.next_window.emit(self.radio_button_group.checkedId())
 
-    def go_to_game(self, game_name, username):
-        self.next_window.emit(game_name, username)
-
-    def unlock_all_levels(self, game_name, username):
-        file_path = game_database[game_name]
-        database_manager = GameDatabaseManagement(file_path, username)
-        database_manager.unlock_all_levels()
+    def unlock_all_levels(self):
         self.make_all_rbuttons_checkable()
-        print("All levels are unlocked now.")
-
-
-if __name__ == '__main__':
-    import sys
-
-    app = QApplication(sys.argv)
-    control = LevelWindow(username="username")
-    control.show()
-    sys.exit(app.exec())
+        self.unlock_all_levels_signal.emit()
