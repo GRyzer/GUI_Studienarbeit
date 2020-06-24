@@ -1,6 +1,7 @@
 from LevelPage import LevelWindow
 from GamesEnum import Game
 from hangman import HangmanWindow
+from memorytest import MemoryWindow
 
 from PyQt5 import QtWidgets, QtCore
 
@@ -47,16 +48,16 @@ class GameController(QtWidgets.QWidget):
     def start_game(self, level):
         self.level_window.hide()
         self.game.play_game(level)
-        self.game.show()
 
     def select_game(self):
         game = None
-        if self.selected_game == Game.One.value:
+        if self.selected_game == Game.Hangman.value:
             game = HangmanWindow(self.username)
+        elif self.selected_game == Game.Memory.value:
+            game = MemoryWindow(self.username)
         return game
 
     def play_level(self, level):
         self.game.hide()
         self.create_game()
         self.game.play_game(level)
-        self.game.show()
