@@ -48,7 +48,7 @@ class FormWidget(FormWidgetIF):
 
         for row in range(0, 2):
             for column in range(1, 3):
-                button = QPushButton(f"Game {column + row * 2}", game_menu_page)
+                button = QPushButton(f"{Game(2 * row + column).name}", game_menu_page)
                 button.setSizePolicy(self.get_size_policy(button, QSizePolicy.Fixed, QSizePolicy.Maximum))
                 button.setFont(QFont('', 14))
 
