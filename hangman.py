@@ -164,6 +164,7 @@ class HangmanWindow(QtWidgets.QWidget, FormWidget):
 
     @staticmethod
     def get_searched_word():
+        # alternative method described here: https://github.com/vaibhavsingh97/random-word/issues/32
         r = random_word.RandomWords()
         while True:
             word = r.get_random_word()
@@ -195,6 +196,7 @@ class HangmanWindow(QtWidgets.QWidget, FormWidget):
         self.setupUi(self, self.searched_blank_word, self.used_letters, "hangman_assets/hangman_start.png",
                      self.allowed_trials, selected_level)
         self.connect_buttons_to_game()
+        self.show()
 
     def connect_buttons_to_game(self):
         for button in self.alphabet_button_list:
