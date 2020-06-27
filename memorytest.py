@@ -86,7 +86,7 @@ class FormWidget(FormWidgetIF):
 
 
 class MemoryWindow(QtWidgets.QWidget, FormWidget):
-    database_path = "memory.csv"
+    database_path = "databases/memory.csv"
     game_menu_window = QtCore.pyqtSignal()
     level_menu = QtCore.pyqtSignal()
     next_level = QtCore.pyqtSignal(int)
@@ -144,10 +144,7 @@ class MemoryWindow(QtWidgets.QWidget, FormWidget):
         for element in rnd_button_list:
             button = self.button_list[element]
             self.program_selected_buttons.append(button)
-            timer = QtCore.QTimer(self)
-            timer.setSingleShot(True)
-            timer.start(start_value)
-            timer.timeout.connect(partial(self.change_button_background2, button, "red"))
+            self.change_button_background2(button, "red")
             start_value += play_dict["increment"]
             timer2 = QtCore.QTimer(self)
             timer2.setSingleShot(True)
