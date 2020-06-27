@@ -101,7 +101,7 @@ class FormWidget(FormWidgetIF):
 
 
 class HangmanWindow(QtWidgets.QWidget, FormWidget):
-    database_path = "hangman.csv"
+    database_path = "databases/hangman.csv"
     game_menu_window = QtCore.pyqtSignal()
     level_menu = QtCore.pyqtSignal()
     next_level = QtCore.pyqtSignal(int)
