@@ -86,7 +86,7 @@ class FormWidget(FormWidgetIF):
 
 
 class MemoryWindow(QtWidgets.QWidget, FormWidget):
-    database_path = "databases/memory.csv"
+    database_path = "databases/patternrecognition.csv"
     game_menu_window = QtCore.pyqtSignal()
     level_menu = QtCore.pyqtSignal()
     next_level = QtCore.pyqtSignal(int)
