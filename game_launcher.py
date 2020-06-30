@@ -1,17 +1,17 @@
 from PyQt5.QtWidgets import QApplication
 import sys
-from SignUpPage import SignUpWindow
-from MainMenuPage import WindowOne
-from LogInPage import LogInWindow
-from accountManagement import AccountManagement
-from GameMenuPage import GameMenuWindow
-from GameController import GameController
+from sign_up_page import SignUpWindow
+from main_menu_page import WindowOne
+from login_page import LogInWindow
+from account_management import AccountManagement
+from game_menu_page import GameMenuWindow
+from game_controller import GameController
 
 # TODO language change german english
 # TODO create an Interface for DatabaseManagement
 
 
-class Controller:
+class GameLauncher:
     def __init__(self):
         self.main_menu = None
         self.signup_window = None
@@ -84,7 +84,7 @@ if __name__ == '__main__':
 
     sys.excepthook = my_exception_hook
     app = QApplication(sys.argv)
-    control = Controller()
+    control = GameLauncher()
     control.show_main()
     try:
         sys.exit(app.exec())

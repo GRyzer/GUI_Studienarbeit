@@ -5,8 +5,8 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from formWidget import FormWidgetIF
-from gameDatabaseManagement import GameDatabaseManagement
+from form_widget import FormWidgetIF
+from game_database_management import GameDatabaseManagement
 
 
 class Level:

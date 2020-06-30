@@ -1,9 +1,9 @@
-from LevelPage import LevelWindow
-from GamesEnum import Game
-from hangman import HangmanWindow
+from level_page import LevelWindow
+from games_enum import Game
+from hangman_page import HangmanWindow
 from pattern_recognition_page import MemoryWindow
-from ButtonShooter import ButtonShooter
-from Memory import MemoryWindow
+from button_shooter_page import ButtonShooter
+from memory_page import MemoryWindow
 
 from PyQt5 import QtWidgets, QtCore
 

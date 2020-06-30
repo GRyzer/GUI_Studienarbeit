@@ -7,8 +7,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 import random_word
 
-from formWidget import FormWidgetIF
-from gameDatabaseManagement import GameDatabaseManagement
+from form_widget import FormWidgetIF
+from game_database_management import GameDatabaseManagement
 
 
 class FormWidget(FormWidgetIF):
