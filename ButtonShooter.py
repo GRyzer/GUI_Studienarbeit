@@ -17,7 +17,7 @@ class FormWidget(FormWidgetIF):
         self.game_menu_button = None
         self.level_selection_button = None
 
-    def setupUi(self, button_shooter_page, selected_level=1, uptime="100"):
+    def setupUi(self, button_shooter_page, selected_level, uptime="100"):
         button_shooter_page.setMinimumSize(self.get_min_widget())
         button_shooter_page.setMaximumSize(self.get_max_widget())
         button_shooter_page.setWindowTitle(f"Button Shooter, Level: {selected_level}")
@@ -40,8 +40,7 @@ class FormWidget(FormWidgetIF):
         self.verticalLayout.addLayout(self.horizontalLayout)
 
         self.grid_layout = QtWidgets.QGridLayout(button_shooter_page)
-        self.grid_layout.setContentsMargins(10, 0, 0, 10)
-        self.grid_layout.heightForWidth(30)
+        self.grid_layout.setContentsMargins(11, -1, 11, -1)
 
         for index in range(300):
             button = QPushButton(button_shooter_page)
