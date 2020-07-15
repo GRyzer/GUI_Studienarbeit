@@ -7,6 +7,7 @@ from PyQt5.QtGui import *
 
 from form_widget import FormWidgetIF
 from game_database_management import GameDatabaseManagement
+from games import Game
 
 
 class Button(QPushButton):
@@ -88,9 +89,11 @@ class ButtonManager(QButtonGroup):
         for button in self.buttons():
             button.show_icon()
 
+
 class FormWidget(FormWidgetIF):
-    def __init__(self):
+    def __init__(self, memory_page, selected_level):
         self.button_manager = ButtonManager()
+        self.setupUi(memory_page, selected_level)
 
     def setupUi(self, memory_page, selected_level):
         memory_page.setMinimumSize(self.get_min_widget())
@@ -144,43 +147,16 @@ class FormWidget(FormWidgetIF):
         QtCore.QMetaObject.connectSlotsByName(memory_page)
 
 
-class MemoryWindow(QtWidgets.QWidget, FormWidget):
+class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
     database_path = "databases/memory.csv"
-    game_menu_window = QtCore.pyqtSignal()
-    level_menu = QtCore.pyqtSignal()
-    next_level = QtCore.pyqtSignal(int)
-    play_level_again = QtCore.pyqtSignal(int)
     max_level = 20
 
     def __init__(self, username):
-        super(MemoryWindow, self).__init__()
+        QtWidgets.QWidget.__init__(self)
         self.game_database = GameDatabaseManagement(self.database_path, username)
         self.achieved_points = None
         self.required_points = None
         self.moves = None
-
-    def get_unlocked_level(self):
-        return self.game_database.get_unlocked_level()
-
-    def unlock_next_level(self, level):
-        if level == self.get_unlocked_level():
-            self.game_database.unlock_level(level+1)
-
-    def unlock_all_levels(self):
-        self.game_database.unlock_all_levels()
-
-    def goto_game_menu(self):
-        self.game_menu_window.emit()
-
-    def goto_next_level(self):
-        if self.selected_level + 1 <= self.get_unlocked_level():
-            self.next_level.emit(self.selected_level + 1)
-
-    def goto_level_selection(self):
-        self.level_menu.emit()
-
-    def goto_play_level_again(self):
-        self.play_level_again.emit(self.selected_level)
 
     def connect_buttons_to_game(self):
         self.game_menu_button.clicked.connect(self.goto_game_menu)
@@ -204,11 +180,12 @@ class MemoryWindow(QtWidgets.QWidget, FormWidget):
         self.achieved_points = 0
         self.required_points = 800 + level * 50
         self.moves = 0
+        FormWidget.__init__(self, self, level)
+        Game.__init__(self, self.game_database, level)
 
     def play_game(self, level):
         self.selected_level = level
         self.initialize_game(level)
-        self.setupUi(self, level)
         self.set_memory_images()
         self.connect_buttons_to_game()
         self.show()

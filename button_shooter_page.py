@@ -4,10 +4,11 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 from form_widget import FormWidgetIF
 from game_database_management import GameDatabaseManagement
+from games import Game
 
 
 class FormWidget(FormWidgetIF):
-    def __init__(self):
+    def __init__(self, button_shooter_page, selected_level, uptime):
         self.button_list = []
         self.countdown_label = None
         self.form_layout = None
@@ -18,6 +19,7 @@ class FormWidget(FormWidgetIF):
         self.horizontal_layout2 = None
         self.level_selection_button = None
         self.main_vertical_layout = None
+        self.setupUi(button_shooter_page, selected_level, uptime)
 
     def setupUi(self, button_shooter_page, selected_level, uptime):
         button_shooter_page.setMinimumSize(self.get_min_widget())
@@ -75,16 +77,12 @@ class FormWidget(FormWidgetIF):
         QtCore.QMetaObject.connectSlotsByName(button_shooter_page)
 
 
-class ButtonShooter(QtWidgets.QWidget, FormWidget):
-    database_path = "databases/buttonshooter.csv"
-    game_menu_window = QtCore.pyqtSignal()
-    level_menu = QtCore.pyqtSignal()
-    next_level = QtCore.pyqtSignal(int)
+class ButtonShooter(Game, FormWidget, QtWidgets.QWidget):
+    database_path = "databases/button_shooter.csv"
     max_level = 20
-    play_level_again = QtCore.pyqtSignal(int)
 
     def __init__(self, username):
-        super(ButtonShooter, self).__init__()
+        QtWidgets.QWidget.__init__(self)
         self.countdown = None
         self.game_database = GameDatabaseManagement(self.database_path, username)
         self.hit_targets = None
@@ -94,29 +92,7 @@ class ButtonShooter(QtWidgets.QWidget, FormWidget):
         self.selected_level = None
         self.start_playing = None
         self.timer = None
-
-    def get_unlocked_level(self):
-        return self.game_database.get_unlocked_level()
-
-    def unlock_next_level(self, level):
-        if level == self.get_unlocked_level():
-            self.game_database.unlock_level(level+1)
-
-    def unlock_all_levels(self):
-        self.game_database.unlock_all_levels()
-
-    def goto_game_menu(self):
-        self.game_menu_window.emit()
-
-    def goto_next_level(self):
-        if self.selected_level + 1 <= self.get_unlocked_level():
-            self.next_level.emit(self.selected_level + 1)
-
-    def goto_level_selection(self):
-        self.level_menu.emit()
-
-    def goto_play_level_again(self):
-        self.play_level_again.emit(self.selected_level)
+        self.username = username
 
     def initialize(self, level):
         self.countdown = 100
@@ -126,8 +102,8 @@ class ButtonShooter(QtWidgets.QWidget, FormWidget):
         self.selected_level = level
         self.start_playing = True
         self.timer = QtCore.QTimer(self)
-
-        self.setupUi(self, level, self.countdown)
+        FormWidget.__init__(self, self, level, self.countdown)
+        Game.__init__(self, self.game_database, level)
 
     def connect_buttons_to_game(self):
         self.timer.timeout.connect(self.update_timer)

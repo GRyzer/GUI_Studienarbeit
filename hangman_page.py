@@ -7,10 +7,11 @@ import random_word
 
 from form_widget import FormWidgetIF
 from game_database_management import GameDatabaseManagement
+from games import Game
 
 
 class FormWidget(FormWidgetIF):
-    def __init__(self):
+    def __init__(self, hangman_page, searched_word, used_letters, hangman_start_picture, allowed_trials, selected_level):
         self.alphabet_button_list = []
         self.used_letters_list = []
         self.hangman_pic_label = None
@@ -27,6 +28,7 @@ class FormWidget(FormWidgetIF):
         self.trials_left_label = None
         self.game_menu_button = None
         self.level_selection_button = None
+        self.setupUi(hangman_page, searched_word, used_letters, hangman_start_picture, allowed_trials, selected_level)
 
     def setupUi(self, hangman_page, searched_word, used_letters, hangman_start_picture, allowed_trials, selected_level):
         hangman_page.setMinimumSize(self.get_min_widget())
@@ -98,16 +100,12 @@ class FormWidget(FormWidgetIF):
         QtCore.QMetaObject.connectSlotsByName(hangman_page)
 
 
-class HangmanWindow(QtWidgets.QWidget, FormWidget):
+class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
     database_path = "databases/hangman.csv"
-    game_menu_window = QtCore.pyqtSignal()
-    level_menu = QtCore.pyqtSignal()
-    next_level = QtCore.pyqtSignal(int)
-    play_level_again = QtCore.pyqtSignal(int)
     max_level = 20
 
     def __init__(self, username):
-        super(HangmanWindow, self).__init__()
+        QtWidgets.QWidget.__init__(self)
         self.game_database = GameDatabaseManagement(self.database_path, username)
         self.allowed_trials = None
         self.trials_left = None
@@ -116,35 +114,15 @@ class HangmanWindow(QtWidgets.QWidget, FormWidget):
         self.hangman_picture_list = None
         self.used_letters = None
 
-    def get_unlocked_level(self):
-        return self.game_database.get_unlocked_level()
-
-    def unlock_next_level(self, level):
-        if level == self.get_unlocked_level():
-            self.game_database.unlock_level(level+1)
-
-    def unlock_all_levels(self):
-        self.game_database.unlock_all_levels()
-
-    def goto_game_menu(self):
-        self.game_menu_window.emit()
-
-    def goto_next_level(self):
-        if self.selected_level + 1 <= self.get_unlocked_level():
-            self.next_level.emit(self.selected_level + 1)
-
-    def goto_level_selection(self):
-        self.level_menu.emit()
-
-    def goto_play_level_again(self):
-        self.play_level_again.emit(self.selected_level)
-
     def initialize_game(self):
         self.allowed_trials = self.get_allowed_trials(self.selected_level)
         self.trials_left = self.allowed_trials
         self.searched_word, self.searched_blank_word = self.get_searched_word()
         self.hangman_picture_list = self.get_hangman_picture_paths(self.allowed_trials)
         self.used_letters = "Used Letters: "
+        FormWidget.__init__(self, self, self.searched_blank_word, self.used_letters, "hangman_assets/hangman_start.png",
+                            self.allowed_trials, self.selected_level)
+        Game.__init__(self, self.game_database, self.selected_level)
 
     @staticmethod
     def get_allowed_trials(selected_level):
@@ -191,8 +169,6 @@ class HangmanWindow(QtWidgets.QWidget, FormWidget):
     def play_game(self, selected_level):
         self.selected_level = selected_level
         self.initialize_game()
-        self.setupUi(self, self.searched_blank_word, self.used_letters, "hangman_assets/hangman_start.png",
-                     self.allowed_trials, selected_level)
         self.connect_buttons_to_game()
         self.show()
 

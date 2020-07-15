@@ -7,6 +7,7 @@ from PyQt5.QtGui import *
 
 from form_widget import FormWidgetIF
 from game_database_management import GameDatabaseManagement
+from games import Game
 
 
 class Level:
@@ -37,9 +38,10 @@ class Level:
 
 
 class FormWidget(FormWidgetIF):
-    def __init__(self):
+    def __init__(self, memory_page, color, selected_level):
         self.grid_layout = None
         self.button_list = []
+        self.setupUi(memory_page, color, selected_level)
 
     def setupUi(self, memory_page, color, selected_level):
         memory_page.setMinimumSize(self.get_min_widget())
@@ -85,46 +87,23 @@ class FormWidget(FormWidgetIF):
             button.setStyleSheet(f"background-color: red")
 
 
-class PatternRecognitionWindow(QtWidgets.QWidget, FormWidget):
+class PatternRecognitionWindow(Game, FormWidget, QtWidgets.QWidget):
     database_path = "databases/patternrecognition.csv"
-    game_menu_window = QtCore.pyqtSignal()
-    level_menu = QtCore.pyqtSignal()
-    next_level = QtCore.pyqtSignal(int)
-    play_level_again = QtCore.pyqtSignal(int)
     max_level = 20
 
     def __init__(self, username):
-        super(PatternRecognitionWindow, self).__init__()
+        QtWidgets.QWidget.__init__(self)
         self.program_selected_buttons = []
         self.level_dict = {}
         self.game_database = GameDatabaseManagement(self.database_path, username)
 
-    def get_unlocked_level(self):
-        return self.game_database.get_unlocked_level()
-
-    def unlock_next_level(self, level):
-        if level == self.get_unlocked_level():
-            self.game_database.unlock_level(level+1)
-
-    def unlock_all_levels(self):
-        self.game_database.unlock_all_levels()
-
-    def goto_game_menu(self):
-        self.game_menu_window.emit()
-
-    def goto_next_level(self):
-        if self.selected_level + 1 <= self.get_unlocked_level():
-            self.next_level.emit(self.selected_level + 1)
-
-    def goto_level_selection(self):
-        self.level_menu.emit()
-
-    def goto_play_level_again(self):
-        self.play_level_again.emit(self.selected_level)
+    def initialize(self, level):
+        FormWidget.__init__(self, self, self.palette().color(QPalette.Background), level)
+        Game.__init__(self, self.game_database, level)
 
     def play_game(self, level):
         self.selected_level = level
-        self.setupUi(self, self.palette().color(QPalette.Background), self.selected_level)
+        self.initialize(level)
         self.show()
         msg_box = QMessageBox()
         msg_box.setWindowTitle("Round screen")
