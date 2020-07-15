@@ -1,10 +1,8 @@
+import string
 from functools import partial
 from itertools import chain
-import string
 
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt5 import QtWidgets, QtCore, QtGui
 import random_word
 
 from form_widget import FormWidgetIF
@@ -40,7 +38,7 @@ class FormWidget(FormWidgetIF):
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
 
         self.searched_word_label = QtWidgets.QLabel(searched_word, hangman_page)
-        self.searched_word_label.setFont(QFont('', 26))
+        self.searched_word_label.setFont(QtGui.QFont('', 26))
         self.searched_word_label.setAlignment(QtCore.Qt.AlignCenter)
         self.verticalLayout.addWidget(self.searched_word_label)
 
@@ -48,7 +46,7 @@ class FormWidget(FormWidgetIF):
 
         self.hangman_pic_label = QtWidgets.QLabel("Hangman Picture", hangman_page)
         self.hangman_pic_label.setScaledContents(True)
-        self.hangman_pic_label.setPixmap(QPixmap(hangman_start_picture))
+        self.hangman_pic_label.setPixmap(QtGui.QPixmap(hangman_start_picture))
         self.hangman_pic_label.setAlignment(QtCore.Qt.AlignCenter)
         self.horizontalLayout.addWidget(self.hangman_pic_label)
 
@@ -56,7 +54,7 @@ class FormWidget(FormWidgetIF):
         self.gridLayout.setContentsMargins(-1, -1, 2, -1)
 
         for index, letter in enumerate(string.ascii_uppercase):
-            button = QPushButton(letter, hangman_page)
+            button = QtWidgets.QPushButton(letter, hangman_page)
             self.alphabet_button_list.append(button)
             self.gridLayout.addWidget(button, index // 4, index % 4)
 
@@ -67,32 +65,32 @@ class FormWidget(FormWidgetIF):
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(hangman_page)
 
         self.used_letters_label = QtWidgets.QLabel(used_letters, hangman_page)
-        self.used_letters_label.setFont(QFont('', 20))
+        self.used_letters_label.setFont(QtGui.QFont('', 20))
         self.used_letters_label.setAlignment(QtCore.Qt.AlignCenter)
         self.verticalLayout2.addWidget(self.used_letters_label)
 
         self.trials_left_label = QtWidgets.QLabel(f"Trials left: {allowed_trials}", hangman_page)
-        self.trials_left_label.setFont(QFont('', 20))
+        self.trials_left_label.setFont(QtGui.QFont('', 20))
         self.trials_left_label.setAlignment(QtCore.Qt.AlignCenter)
         self.verticalLayout2.addWidget(self.trials_left_label)
         self.horizontalLayout_2.addLayout(self.verticalLayout2)
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
 
-        self.horizontalLayout3 = QHBoxLayout(hangman_page)
+        self.horizontalLayout3 = QtWidgets.QHBoxLayout(hangman_page)
 
-        self.formLayout2 = QFormLayout(hangman_page)
+        self.formLayout2 = QtWidgets.QFormLayout(hangman_page)
         self.formLayout2.setFormAlignment(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing)
         self.formLayout2.setContentsMargins(-1, -1, 20, 20)
 
-        self.game_menu_button = QPushButton('return to game menu', hangman_page)
+        self.game_menu_button = QtWidgets.QPushButton('return to game menu', hangman_page)
         self.game_menu_button.setSizePolicy(self.get_size_policy(self.game_menu_button))
-        self.game_menu_button.setFont(QFont('', 12))
+        self.game_menu_button.setFont(QtGui.QFont('', 12))
         self.formLayout2.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.game_menu_button)
 
-        self.level_selection_button = QPushButton('go to level selection', hangman_page)
+        self.level_selection_button = QtWidgets.QPushButton('go to level selection', hangman_page)
         self.level_selection_button.setSizePolicy(self.get_size_policy(self.level_selection_button))
-        self.level_selection_button.setFont(QFont('', 12))
+        self.level_selection_button.setFont(QtGui.QFont('', 12))
         self.formLayout2.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.level_selection_button)
 
         self.horizontalLayout3.addLayout(self.formLayout2)
@@ -220,7 +218,8 @@ class HangmanWindow(QtWidgets.QWidget, FormWidget):
     def update_hangman(self):
         self.trials_left -= 1
         self.trials_left_label.setText(f"Trials left: {self.trials_left}")
-        self.hangman_pic_label.setPixmap(QPixmap(self.hangman_picture_list[self.allowed_trials - self.trials_left -1]))
+        self.hangman_pic_label.setPixmap(QtGui.QPixmap(self.hangman_picture_list[self.allowed_trials -
+                                                                                 self.trials_left - 1]))
 
     def update_used_letters(self, letter):
         if letter not in self.used_letters_list:
@@ -239,35 +238,35 @@ class HangmanWindow(QtWidgets.QWidget, FormWidget):
     def check_for_end_of_game(self):
         if '_' not in self.searched_blank_word:
             if self.selected_level == self.max_level:
-                msg_box = QMessageBox()
+                msg_box = QtWidgets.QMessageBox()
                 msg_box.setWindowTitle("Win")
                 msg_box.setText("Congratulation you completed every level!")
-                msg_box.addButton(QPushButton('Go back to game menu'), QMessageBox.AcceptRole)
+                msg_box.addButton(QtWidgets.QPushButton('Go back to game menu'), QtWidgets.QMessageBox.AcceptRole)
                 msg_box.exec()
                 self.goto_game_menu()
             else:
                 self.unlock_next_level(self.selected_level)
-                msg_box = QMessageBox()
+                msg_box = QtWidgets.QMessageBox()
                 msg_box.setWindowTitle("Win")
                 msg_box.setText("Congratulation you won!")
-                msg_box.addButton(QPushButton('Go to game menu'), QMessageBox.AcceptRole)
-                msg_box.addButton(QPushButton('Play next level'), QMessageBox.RejectRole)
+                msg_box.addButton(QtWidgets.QPushButton('Go to game menu'), QtWidgets.QMessageBox.AcceptRole)
+                msg_box.addButton(QtWidgets.QPushButton('Play next level'), QtWidgets.QMessageBox.RejectRole)
                 t = msg_box.exec()
-                if t == QMessageBox.AcceptRole:
+                if t == QtWidgets.QMessageBox.AcceptRole:
                     self.goto_game_menu()
-                elif t == QMessageBox.RejectRole:
+                elif t == QtWidgets.QMessageBox.RejectRole:
                     self.goto_next_level()
         elif self.trials_left == 0:
-            msg_box = QMessageBox()
+            msg_box = QtWidgets.QMessageBox()
             msg_box.setWindowTitle("Lose")
             msg_box.setText(f"Unfortunately you lost! The searched word was: {self.searched_word}")
-            msg_box.addButton(QPushButton('Go to game menu'), QMessageBox.AcceptRole)
-            msg_box.addButton(QPushButton('Play level again'), QMessageBox.RejectRole)
-            msg_box.addButton(QPushButton('Go to level selection'), QMessageBox.DestructiveRole)
+            msg_box.addButton(QtWidgets.QPushButton('Go to game menu'), QtWidgets.QMessageBox.AcceptRole)
+            msg_box.addButton(QtWidgets.QPushButton('Play level again'), QtWidgets.QMessageBox.RejectRole)
+            msg_box.addButton(QtWidgets.QPushButton('Go to level selection'), QtWidgets.QMessageBox.DestructiveRole)
             t = msg_box.exec()
-            if t == QMessageBox.DestructiveRole:
+            if t == QtWidgets.QMessageBox.DestructiveRole:
                 self.goto_level_selection()
-            elif t == QMessageBox.AcceptRole:
+            elif t == QtWidgets.QMessageBox.AcceptRole:
                 self.goto_game_menu()
-            elif t == QMessageBox.RejectRole:
+            elif t == QtWidgets.QMessageBox.RejectRole:
                 self.goto_play_level_again()

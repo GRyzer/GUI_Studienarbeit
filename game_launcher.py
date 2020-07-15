@@ -13,11 +13,11 @@ from game_controller import GameController
 
 class GameLauncher:
     def __init__(self):
+        self.game_controller = None
+        self.game_menu_window = None
+        self.login_window = None
         self.main_menu = None
         self.signup_window = None
-        self.login_window = None
-        self.game_menu_window = None
-        self.game_controller = None
         self.account = AccountManagement()
 
     def show_main(self):

@@ -1,5 +1,4 @@
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QSizePolicy
 
 
 class FormWidgetIF:
@@ -20,7 +19,7 @@ class FormWidgetIF:
         return QtCore.QSize(self.default_width, self.default_height)
 
     @staticmethod
-    def get_size_policy(q_object, h_policy=QSizePolicy.Fixed, v_policy=QSizePolicy.Fixed):
+    def get_size_policy(q_object, h_policy=QtWidgets.QSizePolicy.Fixed, v_policy=QtWidgets.QSizePolicy.Fixed):
         size_policy = QtWidgets.QSizePolicy(h_policy, v_policy)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)

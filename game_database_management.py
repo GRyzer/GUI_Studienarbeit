@@ -1,5 +1,5 @@
-import pandas as pd
 import os
+import pandas as pd
 
 # TODO Anonymous user should be temporary and shall be deleted, not sure where exactly maybe at game menu
 
@@ -8,8 +8,8 @@ class GameDatabaseManagement:
     header = ["username", "unlocked_level"]
 
     def __init__(self, file_path, username, max_level=20):
-        self.max_level = max_level
         self.file_path = file_path
+        self.max_level = max_level
         self.username = username
         self.df = self.get_game_database()
         self.initialize_user_account(username)
@@ -29,8 +29,8 @@ class GameDatabaseManagement:
 
     def create_user_account(self, username):
         default_data = [username, 1]
-        df2 = pd.DataFrame([default_data], columns=self.header)
-        self.df = self.df.append(df2, ignore_index=True)
+        new_df = pd.DataFrame([default_data], columns=self.header)
+        self.df = self.df.append(new_df, ignore_index=True)
         self.df.to_csv(self.file_path, index=False)
 
     def unlock_level(self, level):

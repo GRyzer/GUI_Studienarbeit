@@ -1,7 +1,7 @@
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
 from functools import partial
+
+from PyQt5 import QtWidgets, QtCore, QtGui
+
 from form_widget import FormWidgetIF
 from games_enum import Game
 
@@ -23,7 +23,7 @@ class FormWidget(FormWidgetIF):
         game_menu_page.setWindowTitle("Game Menu")
         game_menu_page.resize(self.get_default_window_size())
 
-        self.verticalLayout = QVBoxLayout(game_menu_page)
+        self.verticalLayout = QtWidgets.QVBoxLayout(game_menu_page)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
 
         self.username_layout = QtWidgets.QFormLayout(game_menu_page)
@@ -38,8 +38,9 @@ class FormWidget(FormWidgetIF):
         self.verticalLayout.addLayout(self.username_layout)
 
         self.heading = QtWidgets.QLabel('Game Menu', game_menu_page)
-        self.heading.setSizePolicy(self.get_size_policy(self.heading, QSizePolicy.Minimum, QSizePolicy.Expanding))
-        self.heading.setFont(QFont('', 26))
+        self.heading.setSizePolicy(self.get_size_policy(self.heading, QtWidgets.QSizePolicy.Minimum,
+                                                        QtWidgets.QSizePolicy.Expanding))
+        self.heading.setFont(QtGui.QFont('', 26))
         self.heading.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.verticalLayout.addWidget(self.heading)
 
@@ -48,9 +49,10 @@ class FormWidget(FormWidgetIF):
 
         for row in range(0, 2):
             for column in range(1, 3):
-                button = QPushButton(f"{Game(2 * row + column).name}", game_menu_page)
-                button.setSizePolicy(self.get_size_policy(button, QSizePolicy.Fixed, QSizePolicy.Maximum))
-                button.setFont(QFont('', 14))
+                button = QtWidgets.QPushButton(f"{Game(2 * row + column).name}", game_menu_page)
+                button.setSizePolicy(self.get_size_policy(button, QtWidgets.QSizePolicy.Fixed,
+                                                          QtWidgets.QSizePolicy.Maximum))
+                button.setFont(QtGui.QFont('', 14))
 
                 self.game_button_storage.append(button)
                 self.gridLayout.addWidget(button, row, column)
@@ -59,12 +61,12 @@ class FormWidget(FormWidgetIF):
         spacer_up = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacer_up)
 
-        self.horizontalLayout = QHBoxLayout(game_menu_page)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(game_menu_page)
         self.horizontalLayout.setContentsMargins(-1, -1, -1, 10)
 
-        self.main_menu_button = QPushButton('return to main menu', game_menu_page)
+        self.main_menu_button = QtWidgets.QPushButton('return to main menu', game_menu_page)
         self.main_menu_button.setSizePolicy(self.get_size_policy(self.main_menu_button))
-        self.main_menu_button.setFont(QFont('', 12))
+        self.main_menu_button.setFont(QtGui.QFont('', 12))
         self.horizontalLayout.addWidget(self.main_menu_button)
 
         self.verticalLayout.addLayout(self.horizontalLayout)
@@ -73,8 +75,8 @@ class FormWidget(FormWidgetIF):
 
 
 class GameMenuWindow(QtWidgets.QWidget, FormWidget):
-    main_menu_window = QtCore.pyqtSignal()
     game_window = QtCore.pyqtSignal(int, str)
+    main_menu_window = QtCore.pyqtSignal()
 
     def __init__(self, username):
         super(GameMenuWindow, self).__init__()
