@@ -85,7 +85,7 @@ class FormWidget(FormWidgetIF):
             button.setStyleSheet(f"background-color: red")
 
 
-class MemoryWindow(QtWidgets.QWidget, FormWidget):
+class PatternRecognitionWindow(QtWidgets.QWidget, FormWidget):
     database_path = "databases/patternrecognition.csv"
     game_menu_window = QtCore.pyqtSignal()
     level_menu = QtCore.pyqtSignal()
@@ -94,7 +94,7 @@ class MemoryWindow(QtWidgets.QWidget, FormWidget):
     max_level = 20
 
     def __init__(self, username):
-        super(MemoryWindow, self).__init__()
+        super(PatternRecognitionWindow, self).__init__()
         self.program_selected_buttons = []
         self.level_dict = {}
         self.game_database = GameDatabaseManagement(self.database_path, username)

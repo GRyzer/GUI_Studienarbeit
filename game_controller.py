@@ -5,7 +5,7 @@ from games_enum import Game
 from hangman_page import HangmanWindow
 from level_page import LevelWindow
 from memory_page import MemoryWindow
-from pattern_recognition_page import MemoryWindow
+from pattern_recognition_page import PatternRecognitionWindow
 
 
 class GameController(QtWidgets.QWidget):
@@ -56,7 +56,7 @@ class GameController(QtWidgets.QWidget):
         if self.selected_game == Game.Hangman.value:
             game = HangmanWindow(self.username)
         elif self.selected_game == Game.PatternRecognition.value:
-            game = MemoryWindow(self.username)
+            game = PatternRecognitionWindow(self.username)
         elif self.selected_game == Game.ButtonShooter.value:
             game = ButtonShooter(self.username)
         elif self.selected_game == Game.Memory.value:
