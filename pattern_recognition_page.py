@@ -113,15 +113,6 @@ class PatternRecognitionWindow(Game, FormWidget, QtWidgets.QWidget):
         FormWidget.__init__(self, self, self.palette().color(QtGui.QPalette.Background), self.selected_level)
         Game.__init__(self, self.game_database, self.selected_level)
 
-    @staticmethod
-    def show_start_screen():
-        msg_box = QtWidgets.QMessageBox()
-        msg_box.setWindowTitle("Round screen")
-        msg_box.setText("Do you want to start?")
-        msg_box.addButton(QtWidgets.QPushButton('Start'), QtWidgets.QMessageBox.AcceptRole)
-        msg_box.addButton(QtWidgets.QPushButton('Go to main menu'), QtWidgets.QMessageBox.RejectRole)
-        return msg_box.exec()
-
     def flicker_the_buttons(self, play_dict):
         rnd_button_list = random.sample(range(0, len(self.button_list)), play_dict["buttons"])
         start_value = play_dict["start_time"]
@@ -188,30 +179,3 @@ class PatternRecognitionWindow(Game, FormWidget, QtWidgets.QWidget):
     def show_solution(self):
         for button in self.program_selected_buttons:
             self.change_button_background(button, "green")
-
-    @staticmethod
-    def show_every_level_completed():
-        msg_box = QtWidgets.QMessageBox()
-        msg_box.setWindowTitle("Win")
-        msg_box.setText("Congratulation you completed every level!")
-        msg_box.addButton(QtWidgets.QPushButton('Go back to game menu'), QtWidgets.QMessageBox.AcceptRole)
-        msg_box.exec()
-
-    @staticmethod
-    def show_selection_for_next_game():
-        msg_box = QtWidgets.QMessageBox()
-        msg_box.setWindowTitle("Win")
-        msg_box.setText("Congratulation you won!")
-        msg_box.addButton(QtWidgets.QPushButton('Go to game menu'), QtWidgets.QMessageBox.AcceptRole)
-        msg_box.addButton(QtWidgets.QPushButton('Play next level'), QtWidgets.QMessageBox.RejectRole)
-        return msg_box.exec()
-
-    @staticmethod
-    def show_losing_screen():
-        msg_box = QtWidgets.QMessageBox()
-        msg_box.setWindowTitle("Lose")
-        msg_box.setText(f"Unfortunately you lost!")
-        msg_box.addButton(QtWidgets.QPushButton('Go to game menu'), QtWidgets.QMessageBox.AcceptRole)
-        msg_box.addButton(QtWidgets.QPushButton('Play level again'), QtWidgets.QMessageBox.RejectRole)
-        msg_box.addButton(QtWidgets.QPushButton('Go to level selection'), QtWidgets.QMessageBox.DestructiveRole)
-        return msg_box.exec()
