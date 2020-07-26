@@ -1,38 +1,36 @@
-from random import shuffle, sample
 from functools import partial
+from random import sample, shuffle
 
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 from form_widget import FormWidgetIF
 from game_database_management import GameDatabaseManagement
 from games import Game
 
 
-class Button(QPushButton):
+class Button(QtWidgets.QPushButton):
     size = 90
 
     def __init__(self):
         super(Button, self).__init__()
         self.icon_path = None
-        self.is_icon_displayed = False
         self.image_number = None
+        self.is_icon_displayed = False
         self.setFixedSize(Button.size, Button.size)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setStyleSheet(f"background-color: grey")
 
     def show_icon(self):
         if not self.is_icon_displayed:
-            icon = QIcon()
-            icon.addPixmap(QPixmap(self.icon_path), QIcon.Normal, QIcon.Off)
-            icon.addPixmap(QPixmap(self.icon_path), QIcon.Disabled, QIcon.Off)
+            icon = QtGui.QIcon()
+            icon.addPixmap(QtGui.QPixmap(self.icon_path), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon.addPixmap(QtGui.QPixmap(self.icon_path), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
             self.setIcon(icon)
             self.setIconSize(QtCore.QSize(90, 90))
             self.is_icon_displayed = True
 
     def reset_icon(self):
-        icon = QIcon()
+        icon = QtGui.QIcon()
         self.setIcon(icon)
         self.is_icon_displayed = False
 
@@ -43,7 +41,7 @@ class Button(QPushButton):
         self.image_number = number
 
 
-class ButtonManager(QButtonGroup):
+class ButtonManager(QtWidgets.QButtonGroup):
     def __init__(self):
         super(ButtonManager, self).__init__()
         self.clicked_buttons = []
@@ -57,7 +55,8 @@ class ButtonManager(QButtonGroup):
             return True
         return False
 
-    def do_images_match(self, button1, button2):
+    @staticmethod
+    def do_images_match(button1, button2):
         if button1.image_number == button2.image_number:
             return True
         return False
@@ -81,7 +80,8 @@ class ButtonManager(QButtonGroup):
         self.removeButton(button1)
         self.removeButton(button2)
 
-    def reset_memory_pair(self, button1, button2):
+    @staticmethod
+    def reset_memory_pair(button1, button2):
         button1.reset_icon()
         button2.reset_icon()
 
@@ -93,6 +93,15 @@ class ButtonManager(QButtonGroup):
 class FormWidget(FormWidgetIF):
     def __init__(self, memory_page, selected_level):
         self.button_manager = ButtonManager()
+        self.form_layout = None
+        self.game_menu_button = None
+        self.grid_layout = None
+        self.horizontal_layout = None
+        self.horizontal_layout2 = None
+        self.level_selection_button = None
+        self.main_vertical_layout = None
+        self.moves_label = None
+        self.points_label = None
         self.setupUi(memory_page, selected_level)
 
     def setupUi(self, memory_page, selected_level):
@@ -101,21 +110,21 @@ class FormWidget(FormWidgetIF):
         memory_page.setWindowTitle(f"Memory, Level: {selected_level}")
         memory_page.resize(QtCore.QSize(1000, 800))
 
-        self.verticalLayout = QtWidgets.QVBoxLayout(memory_page)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.main_vertical_layout = QtWidgets.QVBoxLayout(memory_page)
+        self.main_vertical_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.horizontalLayout = QHBoxLayout(memory_page)
+        self.horizontal_layout = QtWidgets.QHBoxLayout(memory_page)
 
-        self.points_label = QLabel(f"Points: 0", memory_page)
-        self.points_label.setFont(QFont('', 26))
+        self.points_label = QtWidgets.QLabel(f"Points: 0", memory_page)
+        self.points_label.setFont(QtGui.QFont('', 26))
         self.points_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.horizontalLayout.addWidget(self.points_label, alignment=QtCore.Qt.AlignCenter)
+        self.horizontal_layout.addWidget(self.points_label, alignment=QtCore.Qt.AlignCenter)
 
-        self.moves_label = QLabel(f"Moves: 0", memory_page)
-        self.moves_label.setFont(QFont('', 26))
+        self.moves_label = QtWidgets.QLabel(f"Moves: 0", memory_page)
+        self.moves_label.setFont(QtGui.QFont('', 26))
         self.moves_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.horizontalLayout.addWidget(self.moves_label, alignment=QtCore.Qt.AlignCenter)
-        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.horizontal_layout.addWidget(self.moves_label, alignment=QtCore.Qt.AlignCenter)
+        self.main_vertical_layout.addLayout(self.horizontal_layout)
 
         self.grid_layout = QtWidgets.QGridLayout(memory_page)
         self.grid_layout.setContentsMargins(10, 0, 10, 0)
@@ -125,25 +134,25 @@ class FormWidget(FormWidgetIF):
             self.button_manager.addButton(button, index)
             self.grid_layout.addWidget(button, index // 6, index % 6)
 
-        self.verticalLayout.addLayout(self.grid_layout)
-        self.horizontalLayout2 = QHBoxLayout(memory_page)
+        self.main_vertical_layout.addLayout(self.grid_layout)
+        self.horizontal_layout2 = QtWidgets.QHBoxLayout(memory_page)
 
-        self.formLayout = QFormLayout(memory_page)
-        self.formLayout.setFormAlignment(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing)
-        self.formLayout.setContentsMargins(-1, -1, 20, 20)
-        self.game_menu_button = QPushButton('return to game menu', memory_page)
+        self.form_layout = QtWidgets.QFormLayout(memory_page)
+        self.form_layout.setFormAlignment(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing)
+        self.form_layout.setContentsMargins(-1, -1, 20, 20)
+        self.game_menu_button = QtWidgets.QPushButton('return to game menu', memory_page)
         self.game_menu_button.setSizePolicy(self.get_size_policy(self.game_menu_button))
-        self.game_menu_button.setFont(QFont('', 12))
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.game_menu_button)
+        self.game_menu_button.setFont(QtGui.QFont('', 12))
+        self.form_layout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.game_menu_button)
 
-        self.level_selection_button = QPushButton('go to level selection', memory_page)
+        self.level_selection_button = QtWidgets.QPushButton('go to level selection', memory_page)
         self.level_selection_button.setSizePolicy(self.get_size_policy(self.level_selection_button))
-        self.level_selection_button.setFont(QFont('', 12))
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.level_selection_button)
+        self.level_selection_button.setFont(QtGui.QFont('', 12))
+        self.form_layout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.level_selection_button)
 
-        self.horizontalLayout2.addLayout(self.formLayout)
-        self.verticalLayout.addLayout(self.horizontalLayout2)
-        memory_page.setLayout(self.verticalLayout)
+        self.horizontal_layout2.addLayout(self.form_layout)
+        self.main_vertical_layout.addLayout(self.horizontal_layout2)
+        memory_page.setLayout(self.main_vertical_layout)
         QtCore.QMetaObject.connectSlotsByName(memory_page)
 
 
@@ -153,15 +162,27 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
 
     def __init__(self, username):
         QtWidgets.QWidget.__init__(self)
-        self.game_database = GameDatabaseManagement(self.database_path, username)
         self.achieved_points = None
-        self.required_points = None
+        self.game_database = GameDatabaseManagement(self.database_path, username)
         self.moves = None
+        self.required_points = None
 
-    def connect_buttons_to_game(self):
-        self.game_menu_button.clicked.connect(self.goto_game_menu)
-        self.level_selection_button.clicked.connect(self.goto_level_selection)
-        self.button_manager.buttonClicked.connect(self.check_round)
+    def play_game(self, selected_level):
+        self.initialize_game(selected_level)
+        self.show()
+        user_decision = self.show_start_screen()
+        if user_decision == QtWidgets.QMessageBox.RejectRole:
+            self.goto_game_menu()
+
+    def initialize_game(self, selected_level):
+        self.achieved_points = 0
+        self.moves = 0
+        self.required_points = 800 + selected_level * 50
+        self.selected_level = selected_level
+        FormWidget.__init__(self, self, self.selected_level)
+        Game.__init__(self, self.game_database, self.selected_level)
+        self.set_memory_images()
+        self.connect_buttons_to_game()
 
     def set_memory_images(self):
         random_number_list = [number//2 for number in range(2, 38)]
@@ -176,29 +197,10 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
             element.set_image_number(image_number)
             element.set_icon_path(icon_path)
 
-    def initialize_game(self, level):
-        self.achieved_points = 0
-        self.required_points = 800 + level * 50
-        self.moves = 0
-        FormWidget.__init__(self, self, level)
-        Game.__init__(self, self.game_database, level)
-
-    def play_game(self, level):
-        self.selected_level = level
-        self.initialize_game(level)
-        self.set_memory_images()
-        self.connect_buttons_to_game()
-        self.show()
-        msg_box = QMessageBox()
-        msg_box.setWindowTitle("Round screen")
-        msg_box.setText(f"Required points for this round are: {self.required_points}\nDo you want to start?")
-        msg_box.addButton(QPushButton('Start'), QMessageBox.AcceptRole)
-        msg_box.addButton(QPushButton('Go to main menu'), QMessageBox.RejectRole)
-        t = msg_box.exec()
-        if t == QMessageBox.AcceptRole:
-            pass
-        elif t == QMessageBox.RejectRole:
-            self.goto_game_menu()
+    def connect_buttons_to_game(self):
+        self.game_menu_button.clicked.connect(self.goto_game_menu)
+        self.level_selection_button.clicked.connect(self.goto_level_selection)
+        self.button_manager.buttonClicked.connect(self.check_round)
 
     def update_moves(self):
         self.moves += 1
@@ -236,40 +238,61 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
 
     def check_for_end_of_game(self):
         if self.button_manager.is_memory_solved():
-            if self.achieved_points >= self.required_points:
-                if self.selected_level == self.max_level:
-                    msg_box = QMessageBox()
-                    msg_box.setWindowTitle("Win")
-                    msg_box.setText("Congratulation you completed every level!")
-                    msg_box.addButton(QPushButton('Go back to game menu'), QMessageBox.AcceptRole)
-                    msg_box.exec()
-                    self.goto_game_menu()
-                else:
-                    self.unlock_next_level(self.selected_level)
-                    msg_box = QMessageBox()
-                    msg_box.setWindowTitle("Win")
-                    msg_box.setText(f"Congratulation you won!\nYou scored {self.achieved_points} points in "
-                                    f"{self.moves} moves")
-                    msg_box.addButton(QPushButton('Go to game menu'), QMessageBox.AcceptRole)
-                    msg_box.addButton(QPushButton('Play next level'), QMessageBox.RejectRole)
-                    t = msg_box.exec()
-                    if t == QMessageBox.AcceptRole:
-                        self.goto_game_menu()
-                    elif t == QMessageBox.RejectRole:
-                        self.goto_next_level()
+            self.end_the_game()
+
+    def end_the_game(self):
+        if self.achieved_points >= self.required_points:
+            if self.selected_level == self.max_level:
+                self.show_every_level_completed()
+                self.goto_game_menu()
             else:
-                msg_box = QMessageBox()
-                msg_box.setWindowTitle("Lose")
-                msg_box.setText(
-                    f"Unfortunately you lost! You scored only {self.achieved_points} points. Required points were: "
-                    f"{self.required_point}!")
-                msg_box.addButton(QPushButton('Go to game menu'), QMessageBox.AcceptRole)
-                msg_box.addButton(QPushButton('Play level again'), QMessageBox.RejectRole)
-                msg_box.addButton(QPushButton('Go to level selection'), QMessageBox.DestructiveRole)
-                t = msg_box.exec()
-                if t == QMessageBox.DestructiveRole:
-                    self.goto_level_selection()
-                elif t == QMessageBox.AcceptRole:
+                self.unlock_next_level(self.selected_level)
+                user_decision = self.show_selection_for_next_game()
+                if user_decision == QtWidgets.QMessageBox.AcceptRole:
                     self.goto_game_menu()
-                elif t == QMessageBox.RejectRole:
-                    self.goto_play_level_again()
+                elif user_decision == QtWidgets.QMessageBox.RejectRole:
+                    self.goto_next_level()
+        else:
+            user_decision = self.show_losing_screen()
+            if user_decision == QtWidgets.QMessageBox.DestructiveRole:
+                self.goto_level_selection()
+            elif user_decision == QtWidgets.QMessageBox.AcceptRole:
+                self.goto_game_menu()
+            elif user_decision == QtWidgets.QMessageBox.RejectRole:
+                self.goto_play_level_again()
+
+    @staticmethod
+    def show_every_level_completed():
+        msg_box = QtWidgets.QMessageBox()
+        msg_box.setWindowTitle("Win")
+        msg_box.setText("Congratulation you completed every level!")
+        msg_box.addButton(QtWidgets.QPushButton('Go back to game menu'), QtWidgets.QMessageBox.AcceptRole)
+        msg_box.exec()
+
+    def show_selection_for_next_game(self):
+        msg_box = QtWidgets.QMessageBox()
+        msg_box.setWindowTitle("Win")
+        msg_box.setText(f"Congratulation you won!\nYou scored {self.achieved_points} points in "
+                        f"{self.moves} moves")
+        msg_box.addButton(QtWidgets.QPushButton('Go to game menu'), QtWidgets.QMessageBox.AcceptRole)
+        msg_box.addButton(QtWidgets.QPushButton('Play next level'), QtWidgets.QMessageBox.RejectRole)
+        return msg_box.exec()
+
+    def show_losing_screen(self):
+        msg_box = QtWidgets.QMessageBox()
+        msg_box.setWindowTitle("Lose")
+        msg_box.setText(
+            f"Unfortunately you lost! You scored only {self.achieved_points} points. Required points were: "
+            f"{self.required_point}!")
+        msg_box.addButton(QtWidgets.QPushButton('Go to game menu'), QtWidgets.QMessageBox.AcceptRole)
+        msg_box.addButton(QtWidgets.QPushButton('Play level again'), QtWidgets.QMessageBox.RejectRole)
+        msg_box.addButton(QtWidgets.QPushButton('Go to level selection'), QtWidgets.QMessageBox.DestructiveRole)
+        return msg_box.exec()
+
+    def show_start_screen(self):
+        msg_box = QtWidgets.QMessageBox()
+        msg_box.setWindowTitle("Round screen")
+        msg_box.setText(f"Required points for this round are: {self.required_points}\nDo you want to start?")
+        msg_box.addButton(QtWidgets.QPushButton('Start'), QtWidgets.QMessageBox.AcceptRole)
+        msg_box.addButton(QtWidgets.QPushButton('Go to main menu'), QtWidgets.QMessageBox.RejectRole)
+        return msg_box.exec()

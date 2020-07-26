@@ -90,97 +90,94 @@ class ButtonShooter(Game, FormWidget, QtWidgets.QWidget):
         self.required_targets = None
         self.selected_button = None
         self.selected_level = None
-        self.start_playing = None
         self.timer = None
-        self.username = username
 
-    def initialize(self, level):
+    def play_game(self, selected_level):
+        self.initialize_game(selected_level)
+        self.show()
+        user_decision = self.show_start_screen()
+        if user_decision == QtWidgets.QMessageBox.AcceptRole:
+            self.timer.start(1000)
+            self.show_buttons()
+        elif user_decision == QtWidgets.QMessageBox.RejectRole:
+            self.goto_game_menu()
+
+    def initialize_game(self, selected_level):
         self.countdown = 100
         self.hit_targets = 0
         self.missed_targets = 0
-        self.required_targets = self.get_required_target(level)
-        self.selected_level = level
-        self.start_playing = True
+        self.required_targets = self.get_required_target(selected_level)
+        self.selected_level = selected_level
         self.timer = QtCore.QTimer(self)
-        FormWidget.__init__(self, self, level, self.countdown)
-        Game.__init__(self, self.game_database, level)
-
-    def connect_buttons_to_game(self):
         self.timer.timeout.connect(self.update_timer)
-        self.game_menu_button.clicked.connect(self.goto_game_menu)
-        self.level_selection_button.clicked.connect(self.goto_level_selection)
-        for button in self.button_list:
-            button.clicked.connect(self.is_clicked_button_the_proper_target)
+        FormWidget.__init__(self, self, self.selected_level, self.countdown)
+        Game.__init__(self, self.game_database, self.selected_level)
+        self.connect_buttons_to_game()
 
     @staticmethod
     def get_required_target(level):
         return level * 5 + 50
 
-    def play_game(self, level):
-        self.initialize(level)
-        self.connect_buttons_to_game()
-        self.show()
-        msg_box = QtWidgets.QMessageBox()
-        msg_box.setWindowTitle("Round screen")
-        msg_box.setText(f"Required Targets: {self.required_targets}.\nDo you want to start?")
-        msg_box.addButton(QtWidgets.QPushButton('Start'), QtWidgets.QMessageBox.AcceptRole)
-        msg_box.addButton(QtWidgets.QPushButton('Go to main menu'), QtWidgets.QMessageBox.RejectRole)
-        t = msg_box.exec()
-        if t == QtWidgets.QMessageBox.AcceptRole:
-            self.timer.start(1000)
-            self.show_buttons()
-        elif t == QtWidgets.QMessageBox.RejectRole:
-            self.goto_game_menu()
-
     def update_timer(self):
-        # might be deletable
-        if self.start_playing:
-            self.countdown -= 1
-            self.countdown_label.setText(f"Time left: {self.countdown}")
+        self.countdown -= 1
+        self.countdown_label.setText(f"Time left: {self.countdown}")
         if self.countdown == 0:
             self.timer.stop()
-            self.end_of_game()
+            self.end_the_game()
 
-    def end_of_game(self):
+    def end_the_game(self):
         if self.hit_targets >= self.required_targets:
             if self.selected_level == self.max_level:
-                msg_box = QtWidgets.QMessageBox()
-                msg_box.setWindowTitle("Win")
-                msg_box.setText("Congratulation you completed every level!")
-                msg_box.addButton(QtWidgets.QPushButton('Go back to game menu'), QtWidgets.QMessageBox.AcceptRole)
-                msg_box.exec()
+                self.show_every_level_completed()
                 self.goto_game_menu()
             else:
                 self.unlock_next_level(self.selected_level)
-                msg_box = QtWidgets.QMessageBox()
-                msg_box.setWindowTitle("Win")
-                msg_box.setText(f"Congratulation you won!\nYou hit {self.hit_targets} targets and you missed "
-                                f"{self.missed_targets} targets.")
-                msg_box.addButton(QtWidgets.QPushButton('Go to game menu'), QtWidgets.QMessageBox.AcceptRole)
-                msg_box.addButton(QtWidgets.QPushButton('Play next level'), QtWidgets.QMessageBox.RejectRole)
-                t = msg_box.exec()
-                if t == QtWidgets.QMessageBox.AcceptRole:
+                user_decision = self.show_selection_for_next_game()
+                if user_decision == QtWidgets.QMessageBox.AcceptRole:
                     self.goto_game_menu()
-                elif t == QtWidgets.QMessageBox.RejectRole:
+                elif user_decision == QtWidgets.QMessageBox.RejectRole:
                     self.goto_next_level()
         else:
-            msg_box = QtWidgets.QMessageBox()
-            msg_box.setWindowTitle("Lose")
-            msg_box.setText(f"Unfortunately you lost! You only hit {self.hit_targets} targets of required "
-                            f"{self.required_targets} targets. You missed {self.missed_targets} targets.")
-            msg_box.addButton(QtWidgets.QPushButton('Go to game menu'), QtWidgets.QMessageBox.AcceptRole)
-            msg_box.addButton(QtWidgets.QPushButton('Play level again'), QtWidgets.QMessageBox.RejectRole)
-            msg_box.addButton(QtWidgets.QPushButton('Go to level selection'), QtWidgets.QMessageBox.DestructiveRole)
-            t = msg_box.exec()
-            if t == QtWidgets.QMessageBox.DestructiveRole:
+            user_decision = self.show_losing_screen()
+            if user_decision == QtWidgets.QMessageBox.DestructiveRole:
                 self.goto_level_selection()
-            elif t == QtWidgets.QMessageBox.AcceptRole:
+            elif user_decision == QtWidgets.QMessageBox.AcceptRole:
                 self.goto_game_menu()
-            elif t == QtWidgets.QMessageBox.RejectRole:
+            elif user_decision == QtWidgets.QMessageBox.RejectRole:
                 self.goto_play_level_again()
 
-    def change_button_background(self, button, color):
-        button.setStyleSheet(f"background-color: {color}")
+    @staticmethod
+    def show_every_level_completed():
+        msg_box = QtWidgets.QMessageBox()
+        msg_box.setWindowTitle("Win")
+        msg_box.setText("Congratulation you completed every level!")
+        msg_box.addButton(QtWidgets.QPushButton('Go back to game menu'), QtWidgets.QMessageBox.AcceptRole)
+        msg_box.exec()
+
+    def show_selection_for_next_game(self):
+        msg_box = QtWidgets.QMessageBox()
+        msg_box.setWindowTitle("Win")
+        msg_box.setText(f"Congratulation you won!\nYou hit {self.hit_targets} targets and you missed "
+                        f"{self.missed_targets} targets.")
+        msg_box.addButton(QtWidgets.QPushButton('Go to game menu'), QtWidgets.QMessageBox.AcceptRole)
+        msg_box.addButton(QtWidgets.QPushButton('Play next level'), QtWidgets.QMessageBox.RejectRole)
+        return msg_box.exec()
+
+    def show_losing_screen(self):
+        msg_box = QtWidgets.QMessageBox()
+        msg_box.setWindowTitle("Lose")
+        msg_box.setText(f"Unfortunately you lost! You only hit {self.hit_targets} targets of required "
+                        f"{self.required_targets} targets. You missed {self.missed_targets} targets.")
+        msg_box.addButton(QtWidgets.QPushButton('Go to game menu'), QtWidgets.QMessageBox.AcceptRole)
+        msg_box.addButton(QtWidgets.QPushButton('Play level again'), QtWidgets.QMessageBox.RejectRole)
+        msg_box.addButton(QtWidgets.QPushButton('Go to level selection'), QtWidgets.QMessageBox.DestructiveRole)
+        return msg_box.exec()
+
+    def connect_buttons_to_game(self):
+        self.game_menu_button.clicked.connect(self.goto_game_menu)
+        self.level_selection_button.clicked.connect(self.goto_level_selection)
+        for button in self.button_list:
+            button.clicked.connect(self.is_clicked_button_the_proper_target)
 
     def is_clicked_button_the_proper_target(self):
         if self.sender() is self.selected_button:
@@ -193,6 +190,18 @@ class ButtonShooter(Game, FormWidget, QtWidgets.QWidget):
             self.show_buttons()
             self.missed_targets += 1
 
+    @staticmethod
+    def change_button_background(button, color):
+        button.setStyleSheet(f"background-color: {color}")
+
     def show_buttons(self):
         self.selected_button = self.button_list[randint(0, len(self.button_list)-1)]
         self.change_button_background(self.selected_button, "red")
+
+    def show_start_screen(self):
+        msg_box = QtWidgets.QMessageBox()
+        msg_box.setWindowTitle("Round screen")
+        msg_box.setText(f"Required Targets: {self.required_targets}.\nDo you want to start?")
+        msg_box.addButton(QtWidgets.QPushButton('Start'), QtWidgets.QMessageBox.AcceptRole)
+        msg_box.addButton(QtWidgets.QPushButton('Go to main menu'), QtWidgets.QMessageBox.RejectRole)
+        return msg_box.exec()
