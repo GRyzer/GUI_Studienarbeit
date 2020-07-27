@@ -1,6 +1,5 @@
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt5 import QtWidgets, QtCore, QtGui
+
 from form_widget import FormWidgetIF
 
 
@@ -26,19 +25,19 @@ class FormWidget(FormWidgetIF):
         main_window.setWindowTitle("GRazor Game Launcher")
         main_window.resize(self.get_default_window_size())
 
-        self.vertical_layout = QVBoxLayout(main_window)
+        self.vertical_layout = QtWidgets.QVBoxLayout(main_window)
         self.vertical_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.heading = QLabel("Welcome to GRazors Game Launcher!", main_window)
-        self.heading.setFont(QFont('', 24))
+        self.heading = QtWidgets.QLabel("Welcome to GRazors Game Launcher!", main_window)
+        self.heading.setFont(QtGui.QFont('', 24))
         self.heading.setAlignment(QtCore.Qt.AlignCenter)
         self.heading.setWordWrap(True)
         self.vertical_layout.addWidget(self.heading, alignment=QtCore.Qt.AlignCenter)
 
-        self.vertical_layout2 = QVBoxLayout(main_window)
+        self.vertical_layout2 = QtWidgets.QVBoxLayout(main_window)
 
-        self.label = QLabel("Do you want to play anonymously or log in?", main_window)
-        self.label.setFont(QFont('', 10))
+        self.label = QtWidgets.QLabel("Do you want to play anonymously or log in?", main_window)
+        self.label.setFont(QtGui.QFont('', 10))
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.vertical_layout2.addWidget(self.label, alignment=QtCore.Qt.AlignCenter)
 
@@ -67,16 +66,16 @@ class FormWidget(FormWidgetIF):
 
         self.vertical_layout.addLayout(self.vertical_layout2)
 
-        self.horizontal_layout = QHBoxLayout(main_window)
+        self.horizontal_layout = QtWidgets.QHBoxLayout(main_window)
 
-        self.form_layout = QFormLayout(main_window)
+        self.form_layout = QtWidgets.QFormLayout(main_window)
         self.form_layout.setFormAlignment(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight |
                                           QtCore.Qt.AlignTrailing)
         self.form_layout.setContentsMargins(-1, -1, 20, 20)
 
-        self.next_window_button = QPushButton('next', main_window)
+        self.next_window_button = QtWidgets.QPushButton('next', main_window)
         self.next_window_button.setSizePolicy(self.get_size_policy(self.next_window_button))
-        self.next_window_button.setFont(QFont('', 12))
+        self.next_window_button.setFont(QtGui.QFont('', 12))
         self.form_layout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.next_window_button)
 
         self.horizontal_layout.addLayout(self.form_layout)
@@ -87,7 +86,7 @@ class FormWidget(FormWidgetIF):
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
 
-class WindowOne(QWidget, FormWidget):
+class WindowOne(QtWidgets.QWidget, FormWidget):
     game_menu_window = QtCore.pyqtSignal()
     log_in_window = QtCore.pyqtSignal()
     signup_window = QtCore.pyqtSignal()
