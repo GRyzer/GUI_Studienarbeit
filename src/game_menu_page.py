@@ -2,8 +2,8 @@ from functools import partial
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from form_widget import FormWidgetIF
-from games_enum import Game
+from src.form_widget import FormWidgetIF
+from src.games_enum import Game
 
 
 class FormWidget(FormWidgetIF):

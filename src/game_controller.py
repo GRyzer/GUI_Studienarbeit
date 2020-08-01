@@ -1,11 +1,11 @@
 from PyQt5 import QtWidgets, QtCore
 
-from button_shooter_page import ButtonShooter
-from games_enum import Game
-from hangman_page import HangmanWindow
-from level_page import LevelWindow
-from memory_page import MemoryWindow
-from pattern_recognition_page import PatternRecognitionWindow
+from src.button_shooter_page import ButtonShooter
+from src.games_enum import Game
+from src.hangman_page import HangmanWindow
+from src.level_page import LevelWindow
+from src.memory_page import MemoryWindow
+from src.pattern_recognition_page import PatternRecognitionWindow
 
 
 class GameController(QtWidgets.QWidget):

@@ -2,9 +2,9 @@ from random import randint
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from form_widget import FormWidgetIF
-from game_database_management import GameDatabaseManagement
-from games import Game
+from src.form_widget import FormWidgetIF
+from src.game_database_management import GameDatabaseManagement
+from src.games import Game
 
 
 class FormWidget(FormWidgetIF):
@@ -79,18 +79,26 @@ class FormWidget(FormWidgetIF):
 
 class ButtonShooter(Game, FormWidget, QtWidgets.QWidget):
     database_path = "databases/button_shooter.csv"
+    header = ["unlocked_level", "hit_targets"]
+    default_values = [1, 0]
     max_level = 20
 
     def __init__(self, username):
         QtWidgets.QWidget.__init__(self)
         self.countdown = None
-        self.game_database = GameDatabaseManagement(self.database_path, username)
+        self.game_database = None
         self.hit_targets = None
         self.missed_targets = None
         self.required_targets = None
         self.selected_button = None
         self.selected_level = None
         self.timer = None
+        self.data_to_update = {"hit_targets": "hit_targets"}
+        self.initialize_database(username)
+
+    def initialize_database(self, username):
+        self.game_database = GameDatabaseManagement(self.database_path, username, self.header)
+        self.game_database.initialize_user_account(self.default_values)
 
     def play_game(self, selected_level):
         self.initialize_game(selected_level)
@@ -126,7 +134,17 @@ class ButtonShooter(Game, FormWidget, QtWidgets.QWidget):
             self.timer.stop()
             self.end_the_game()
 
+    def update_values(self):
+        values = self.game_database.get_values()
+        updated_values = {}
+        for header_name, variable_name in self.data_to_update.items():
+            value = getattr(self, variable_name)
+            if value > values[header_name]:
+                updated_values[header_name] = value
+        self.game_database.update_values(updated_values)
+
     def end_the_game(self):
+        self.update_values()
         if self.hit_targets >= self.required_targets:
             if self.selected_level == self.max_level:
                 self.show_every_level_completed()
@@ -150,6 +168,7 @@ class ButtonShooter(Game, FormWidget, QtWidgets.QWidget):
                 self.goto_game_menu()
             elif user_decision == QtWidgets.QMessageBox.RejectRole:
                 self.goto_play_level_again()
+        self.game_database.save_user_data()
 
     def connect_buttons_to_game(self):
         self.game_menu_button.clicked.connect(self.goto_game_menu)

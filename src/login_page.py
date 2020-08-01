@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from form_widget import FormWidgetIF
+from src.form_widget import FormWidgetIF
 
 
 class FormWidget(FormWidgetIF):

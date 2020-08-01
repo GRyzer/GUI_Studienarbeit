@@ -3,9 +3,9 @@ import random
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from form_widget import FormWidgetIF
-from game_database_management import GameDatabaseManagement
-from games import Game
+from src.form_widget import FormWidgetIF
+from src.game_database_management import GameDatabaseManagement
+from src.games import Game
 
 
 class Level:
@@ -90,14 +90,21 @@ class FormWidget(FormWidgetIF):
 
 
 class PatternRecognitionWindow(Game, FormWidget, QtWidgets.QWidget):
-    database_path = "databases/patternrecognition.csv"
+    database_path = "src/databases/patternrecognition.csv"
+    header = ["unlocked_level"]
+    default_values = [1]
     max_level = 20
 
     def __init__(self, username):
         QtWidgets.QWidget.__init__(self)
-        self.game_database = GameDatabaseManagement(self.database_path, username)
+        self.game_database = None
         self.level_dict = {}
         self.program_selected_buttons = []
+        self.initialize_database(username)
+
+    def initialize_database(self, username):
+        self.game_database = GameDatabaseManagement(self.database_path, username, self.header)
+        self.game_database.initialize_user_account(self.default_values)
 
     def play_game(self, selected_level):
         self.initialize_game(selected_level)
@@ -175,6 +182,7 @@ class PatternRecognitionWindow(Game, FormWidget, QtWidgets.QWidget):
                 self.goto_game_menu()
             elif user_decision == QtWidgets.QMessageBox.RejectRole:
                 self.goto_play_level_again()
+        self.game_database.save_user_data()
 
     def show_solution(self):
         for button in self.program_selected_buttons:

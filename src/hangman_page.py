@@ -5,9 +5,9 @@ from itertools import chain
 from PyQt5 import QtWidgets, QtCore, QtGui
 import random_word
 
-from form_widget import FormWidgetIF
-from game_database_management import GameDatabaseManagement
-from games import Game
+from src.form_widget import FormWidgetIF
+from src.game_database_management import GameDatabaseManagement
+from src.games import Game
 
 
 class FormWidget(FormWidgetIF):
@@ -24,9 +24,8 @@ class FormWidget(FormWidgetIF):
         self.main_vertical_layout = None
         self.searched_blank_word_label = None
         self.trials_left_label = None
-        self.used_letters_list = []
-        self.vertical_layout = None
         self.used_letters_label = None
+        self.vertical_layout = None
         self.setupUi(hangman_page, searched_word, used_letters, hangman_start_picture, allowed_trials, selected_level)
 
     def setupUi(self, hangman_page, searched_word, used_letters, hangman_start_picture, allowed_trials, selected_level):
@@ -100,18 +99,26 @@ class FormWidget(FormWidgetIF):
 
 
 class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
-    database_path = "databases/hangman.csv"
+    database_path = "src/databases/hangman.csv"
+    header = ["unlocked_level", "word_guessed_by_letter"]
+    default_values = [1, 0.0]
     max_level = 20
 
     def __init__(self, username):
         QtWidgets.QWidget.__init__(self)
-        self.game_database = GameDatabaseManagement(self.database_path, username)
+        self.game_database = None
         self.trials_left = None
         self.searched_word = None
         self.searched_blank_word = None
         self.selected_level = None
         self.hangman_picture_list = None
         self.used_letters = None
+        self.used_letters_list = []
+        self.initialize_database(username)
+
+    def initialize_database(self, username):
+        self.game_database = GameDatabaseManagement(self.database_path, username, self.header)
+        self.game_database.initialize_user_account(self.default_values)
 
     def play_game(self, selected_level):
         self.initialize_game(selected_level)
@@ -219,8 +226,17 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
         if '_' not in self.searched_blank_word or self.trials_left == 0:
             self.end_the_game()
 
+    def update_values(self):
+        values = self.game_database.get_values()
+        updated_values = {}
+        current_value = len(self.searched_word)/len(self.used_letters_list)
+        if current_value > values["word_guessed_by_letter"]:
+            updated_values["word_guessed_by_letter"] = current_value
+        self.game_database.update_values(updated_values)
+
     def end_the_game(self):
         if '_' not in self.searched_blank_word:
+            self.update_values()
             if self.selected_level == self.max_level:
                 self.show_every_level_completed()
                 self.goto_game_menu()
@@ -240,3 +256,4 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
                 self.goto_game_menu()
             elif user_decision == QtWidgets.QMessageBox.RejectRole:
                 self.goto_play_level_again()
+        self.game_database.save_user_data()
