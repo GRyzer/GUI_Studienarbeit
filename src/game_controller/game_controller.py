@@ -1,11 +1,11 @@
 from PyQt5 import QtWidgets, QtCore
 
-from src.button_shooter_page import ButtonShooter
-from src.games_enum import Game
-from src.hangman_page import HangmanWindow
-from src.level_page import LevelWindow
-from src.memory_page import MemoryWindow
-from src.pattern_recognition_page import PatternRecognitionWindow
+from src.games.button_shooter import button_shooter
+from src.games.game_enum import Game
+from src.games.hangman import hangman
+from src.ui.level_page import LevelWindow
+from src.games.memory import memory
+from src.games.pattern_recognition import pattern_recognition
 
 
 class GameController(QtWidgets.QWidget):
@@ -54,13 +54,13 @@ class GameController(QtWidgets.QWidget):
     def select_game(self):
         game = None
         if self.selected_game == Game.Hangman.value:
-            game = HangmanWindow(self.username)
+            game = hangman.HangmanWindow(self.username)
         elif self.selected_game == Game.PatternRecognition.value:
-            game = PatternRecognitionWindow(self.username)
+            game = pattern_recognition.PatternRecognitionWindow(self.username)
         elif self.selected_game == Game.ButtonShooter.value:
-            game = ButtonShooter(self.username)
+            game = button_shooter.ButtonShooter(self.username)
         elif self.selected_game == Game.Memory.value:
-            game = MemoryWindow(self.username)
+            game = memory.MemoryWindow(self.username)
         return game
 
     def play_level(self, level):

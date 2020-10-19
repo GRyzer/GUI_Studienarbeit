@@ -5,9 +5,9 @@ from itertools import chain
 from PyQt5 import QtWidgets, QtCore, QtGui
 import random_word
 
-from src.form_widget import BaseFormWidget
-from src.game_database_management import GameDatabaseManagement
-from src.games import Game
+from src.ui.form_widget import BaseFormWidget
+from src.database_managers.game_database_management import GameDatabaseManagement
+from src.games.game import Game
 
 
 class FormWidget(BaseFormWidget):

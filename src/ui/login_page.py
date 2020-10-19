@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.form_widget import BaseFormWidget
+from src.ui.form_widget import BaseFormWidget
 
 
 class FormWidget(BaseFormWidget):

@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.form_widget import BaseFormWidget
-from src.validators import UsernameValidator, PasswordValidator
+from src.ui.form_widget import BaseFormWidget
+from src.ui.validators import UsernameValidator, PasswordValidator
 
 
 class FormWidget(BaseFormWidget):

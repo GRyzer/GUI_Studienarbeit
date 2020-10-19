@@ -2,12 +2,12 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from src.account_management import AccountManagement
-from src.game_menu_page import GameMenuWindow
-from src.game_controller import GameController
-from src.login_page import LogInWindow
-from src.main_menu_page import MainMenu
-from src.sign_up_page import SignUpWindow
+from src.database_managers.account_management import AccountManagement
+from src.ui.game_menu_page import GameMenuWindow
+from src.game_controller.game_controller import GameController
+from src.ui.login_page import LogInWindow
+from src.ui.main_menu_page import MainMenu
+from src.ui.sign_up_page import SignUpWindow
 
 # TODO language change german english
 # TODO create an Interface for DatabaseManagement

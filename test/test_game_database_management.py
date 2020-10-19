@@ -2,7 +2,7 @@ import unittest
 import unittest.mock as mc
 import os
 import pandas as pd
-from src.game_database_management import GameDatabaseManagement
+from src.database_managers.game_database_management import GameDatabaseManagement
 
 
 class TestDatabase(unittest.TestCase):
