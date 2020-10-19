@@ -3,7 +3,7 @@ from random import sample, shuffle
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.form_widget import FormWidgetIF
+from src.form_widget import BaseFormWidget
 from src.game_database_management import GameDatabaseManagement
 from src.games import Game
 
@@ -90,7 +90,7 @@ class ButtonManager(QtWidgets.QButtonGroup):
             button.show_icon()
 
 
-class FormWidget(FormWidgetIF):
+class FormWidget(BaseFormWidget):
     def __init__(self, memory_page, selected_level):
         self.button_manager = ButtonManager()
         self.form_layout = None

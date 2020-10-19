@@ -1,10 +1,10 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.form_widget import FormWidgetIF
+from src.form_widget import BaseFormWidget
 from src.validators import UsernameValidator, PasswordValidator
 
 
-class FormWidget(FormWidgetIF):
+class FormWidget(BaseFormWidget):
     def __init__(self):
         self.combo_box = None
         self.form_layout = None

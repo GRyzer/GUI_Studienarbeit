@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 
 
-class FormWidgetIF:
+class BaseFormWidget:
     min_height = 300
     min_width = 400
     max_height = 1080

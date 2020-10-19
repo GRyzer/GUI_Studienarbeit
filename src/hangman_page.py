@@ -5,12 +5,12 @@ from itertools import chain
 from PyQt5 import QtWidgets, QtCore, QtGui
 import random_word
 
-from src.form_widget import FormWidgetIF
+from src.form_widget import BaseFormWidget
 from src.game_database_management import GameDatabaseManagement
 from src.games import Game
 
 
-class FormWidget(FormWidgetIF):
+class FormWidget(BaseFormWidget):
     def __init__(self, hangman_page, searched_word, used_letters, hangman_start_picture, allowed_trials, selected_level):
         self.alphabet_button_list = []
         self.form_layout2 = None
@@ -151,6 +151,11 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
 
     @staticmethod
     def get_hangman_picture_paths(trials):
+        """
+        paths_by_level keys are related to method: get_trials
+        :param trials:
+        :return:
+        """
         folder = "hangman_assets"
         picture_paths = [f"{folder}/hangman1.png", f"{folder}/hangman2.png", f"{folder}/hangman3.png",
                          f"{folder}/hangman4.png", f"{folder}/hangman5.png", f"{folder}/hangman6.png",

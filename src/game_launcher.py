@@ -6,7 +6,7 @@ from src.account_management import AccountManagement
 from src.game_menu_page import GameMenuWindow
 from src.game_controller import GameController
 from src.login_page import LogInWindow
-from src.main_menu_page import WindowOne
+from src.main_menu_page import MainMenu
 from src.sign_up_page import SignUpWindow
 
 # TODO language change german english
@@ -23,7 +23,7 @@ class GameLauncher:
         self.signup_window = None
 
     def show_main(self):
-        self.main_menu = WindowOne()
+        self.main_menu = MainMenu()
         self.main_menu.game_menu_window.connect(self.show_game_menu_page)
         self.main_menu.log_in_window.connect(self.show_login_page)
         self.main_menu.signup_window.connect(self.show_signup_page)

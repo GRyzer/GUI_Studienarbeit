@@ -2,12 +2,12 @@ from random import randint
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.form_widget import FormWidgetIF
+from src.form_widget import BaseFormWidget
 from src.game_database_management import GameDatabaseManagement
 from src.games import Game
 
 
-class FormWidget(FormWidgetIF):
+class FormWidget(BaseFormWidget):
     def __init__(self, button_shooter_page, selected_level, uptime):
         self.button_list = []
         self.countdown_label = None

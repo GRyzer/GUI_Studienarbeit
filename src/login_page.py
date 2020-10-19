@@ -1,9 +1,9 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.form_widget import FormWidgetIF
+from src.form_widget import BaseFormWidget
 
 
-class FormWidget(FormWidgetIF):
+class FormWidget(BaseFormWidget):
     def __init__(self):
         self.form_layout = None
         self.form_layout2 = None

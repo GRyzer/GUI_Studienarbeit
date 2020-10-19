@@ -1,9 +1,9 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.form_widget import FormWidgetIF
+from src.form_widget import BaseFormWidget
 
 
-class FormWidget(FormWidgetIF):
+class FormWidget(BaseFormWidget):
     def __init__(self):
         self.anonymous_rbutton = None
         self.form_layout = None
@@ -86,13 +86,13 @@ class FormWidget(FormWidgetIF):
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
 
-class WindowOne(QtWidgets.QWidget, FormWidget):
+class MainMenu(QtWidgets.QWidget, FormWidget):
     game_menu_window = QtCore.pyqtSignal()
     log_in_window = QtCore.pyqtSignal()
     signup_window = QtCore.pyqtSignal()
 
     def __init__(self):
-        super(WindowOne, self).__init__()
+        super(MainMenu, self).__init__()
         self.setupUi(self)
         self.next_window_button.clicked.connect(self.go_to_next_window)
 

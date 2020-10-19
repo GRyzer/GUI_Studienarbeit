@@ -3,7 +3,7 @@ import random
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.form_widget import FormWidgetIF
+from src.form_widget import BaseFormWidget
 from src.game_database_management import GameDatabaseManagement
 from src.games import Game
 
@@ -35,7 +35,7 @@ class Level:
         return getattr(cls, f"LEVEL{level_number}")
 
 
-class FormWidget(FormWidgetIF):
+class FormWidget(BaseFormWidget):
     def __init__(self, memory_page, color, selected_level):
         self.button_list = []
         self.form_layout = None
