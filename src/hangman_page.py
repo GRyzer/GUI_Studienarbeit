@@ -131,7 +131,7 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
         self.searched_blank_word = self.get_blanked_word(self.searched_word)
         self.selected_level = selected_level
         self.used_letters = "Used Letters: "
-        FormWidget.__init__(self, self, self.searched_blank_word, self.used_letters, "hangman_assets/hangman_start.png",
+        FormWidget.__init__(self, self, self.searched_blank_word, self.used_letters, "src/assets/hangman/hangman_start.png",
                             self.trials_left, self.selected_level)
         Game.__init__(self, self.game_database, self.selected_level)
         self.connect_buttons_to_game()
@@ -156,7 +156,7 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
         :param trials:
         :return:
         """
-        folder = "hangman_assets"
+        folder = "src/assets/hangman"
         picture_paths = [f"{folder}/hangman1.png", f"{folder}/hangman2.png", f"{folder}/hangman3.png",
                          f"{folder}/hangman4.png", f"{folder}/hangman5.png", f"{folder}/hangman6.png",
                          f"{folder}/hangman7.png", f"{folder}/hangman8.png", f"{folder}/hangman9.png",

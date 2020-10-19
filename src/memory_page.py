@@ -202,7 +202,7 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
         shuffle(random_number_list)
         for element in self.button_manager.buttons():
             image_number = random_number_list.pop(0)
-            icon_path = f"memory_assets/icon{dictionary[image_number]}"
+            icon_path = f"src/assets/memory/icon{dictionary[image_number]}"
             element.set_image_number(image_number)
             element.set_icon_path(icon_path)
 

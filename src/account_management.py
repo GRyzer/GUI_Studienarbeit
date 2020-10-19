@@ -6,7 +6,7 @@ class AccountManagement:
     header = ["username", "password", "age", "gender"]
 
     def __init__(self):
-        self.file_path = "databases/accounts_database.csv"
+        self.file_path = "src/databases/accounts_database.csv"
         self.df = self.get_accounts()
 
     def get_accounts(self):
