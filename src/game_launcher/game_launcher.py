@@ -9,9 +9,6 @@ from src.ui.login_page import LogInWindow
 from src.ui.main_menu_page import MainMenu
 from src.ui.sign_up_page import SignUpWindow
 
-# TODO language change german english
-# TODO create an Interface for DatabaseManagement
-
 
 class GameLauncher:
     def __init__(self):
@@ -19,54 +16,54 @@ class GameLauncher:
         self.game_controller = None
         self.game_menu_window = None
         self.login_window = None
-        self.main_menu = None
+        self.main_menu_window = None
         self.signup_window = None
 
-    def show_main(self):
-        self.main_menu = MainMenu()
-        self.main_menu.game_menu_window.connect(self.show_game_menu_page)
-        self.main_menu.log_in_window.connect(self.show_login_page)
-        self.main_menu.signup_window.connect(self.show_signup_page)
+    def show_main_menu_window(self):
+        self.main_menu_window = MainMenu()
+        self.main_menu_window.game_menu_window.connect(self.show_game_menu_window)
+        self.main_menu_window.log_in_window.connect(self.show_login_window)
+        self.main_menu_window.signup_window.connect(self.show_signup_window)
         if self.game_menu_window is not None:
             self.game_menu_window.hide()
         if self.login_window is not None:
             self.login_window.hide()
         if self.signup_window is not None:
             self.signup_window.hide()
-        self.main_menu.show()
+        self.main_menu_window.show()
 
-    def show_signup_page(self):
+    def show_signup_window(self):
         self.signup_window = SignUpWindow(self.account)
-        self.signup_window.next_window.connect(self.show_game_menu_page)
-        self.signup_window.previous_window.connect(self.show_main)
+        self.signup_window.next_window.connect(self.show_game_menu_window)
+        self.signup_window.previous_window.connect(self.show_main_menu_window)
         if self.login_window is not None:
             self.login_window.hide()
-        self.main_menu.hide()
+        self.main_menu_window.hide()
         self.signup_window.show()
 
-    def show_login_page(self):
+    def show_login_window(self):
         self.login_window = LogInWindow(self.account)
-        self.login_window.next_window.connect(self.show_game_menu_page)
-        self.login_window.previous_window.connect(self.show_main)
-        self.main_menu.hide()
+        self.login_window.next_window.connect(self.show_game_menu_window)
+        self.login_window.previous_window.connect(self.show_main_menu_window)
+        self.main_menu_window.hide()
         self.login_window.show()
 
-    def show_game_menu_page(self, username=None):
+    def show_game_menu_window(self, username=None):
         if username is None:
             username = 'Anonymous'
         self.game_menu_window = GameMenuWindow(username=username)
-        self.game_menu_window.game_window.connect(self.game_controller_page)
-        self.game_menu_window.main_menu_window.connect(self.show_main)
+        self.game_menu_window.game_window.connect(self.start_selected_game)
+        self.game_menu_window.main_menu_window.connect(self.show_main_menu_window)
         if self.login_window is not None:
             self.login_window.hide()
         if self.signup_window is not None:
             self.signup_window.hide()
-        self.main_menu.hide()
+        self.main_menu_window.hide()
         self.game_menu_window.show()
 
-    def game_controller_page(self, selected_game, username):
+    def start_selected_game(self, selected_game, username):
         self.game_controller = GameController(selected_game, username)
-        self.game_controller.game_menu_window.connect(self.show_game_menu_page)
+        self.game_controller.game_menu_signal.connect(self.show_game_menu_window)
         self.game_menu_window.hide()
         self.game_controller.start()
 
@@ -87,7 +84,7 @@ if __name__ == '__main__':
     sys.excepthook = my_exception_hook
     app = QApplication(sys.argv)
     control = GameLauncher()
-    control.show_main()
+    control.show_main_menu_window()
     try:
         sys.exit(app.exec())
     except:
