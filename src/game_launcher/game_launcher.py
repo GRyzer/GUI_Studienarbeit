@@ -11,13 +11,25 @@ from src.ui.sign_up_window import SignUpWindow
 
 
 class GameLauncher:
+    __instance__ = None
+
     def __init__(self):
-        self.account = AccountManagement()
-        self.game_controller = None
-        self.game_menu_window = None
-        self.login_window = None
-        self.main_menu_window = None
-        self.signup_window = None
+        if GameLauncher.__instance__ is None:
+            GameLauncher.__instance__ = self
+            self.account = AccountManagement()
+            self.game_controller = None
+            self.game_menu_window = None
+            self.login_window = None
+            self.main_menu_window = None
+            self.signup_window = None
+        else:
+            raise Exception("Only one instance of GameLauncher is allowed!")
+
+    @staticmethod
+    def get_instance():
+        if not GameLauncher.__instance__:
+            GameLauncher()
+        return GameLauncher.__instance__
 
     def show_main_menu_window(self):
         self.main_menu_window = MainMenu()
