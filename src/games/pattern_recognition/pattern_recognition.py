@@ -59,7 +59,7 @@ class PatternRecognitionWindow(Game, FormWidget, QtWidgets.QWidget):
         if user_decision == QtWidgets.QMessageBox.AcceptRole:
             self.flicker_the_buttons(Level.get_play_dict(selected_level))
         elif user_decision == QtWidgets.QMessageBox.RejectRole:
-            self.goto_game_menu()
+            self.emit_game_menu_signal()
 
     def initialize_game(self, selected_level):
         self.selected_level = selected_level
@@ -112,22 +112,22 @@ class PatternRecognitionWindow(Game, FormWidget, QtWidgets.QWidget):
         if set(user_selected_list) == set(self.program_selected_buttons):
             if self.selected_level == self.max_level:
                 self.show_every_level_completed()
-                self.goto_game_menu()
+                self.emit_game_menu_signal()
             else:
                 self.unlock_next_level(self.selected_level)
                 user_decision = self.show_selection_for_next_game()
                 if user_decision == QtWidgets.QMessageBox.AcceptRole:
-                    self.goto_game_menu()
+                    self.emit_game_menu_signal()
                 elif user_decision == QtWidgets.QMessageBox.RejectRole:
-                    self.goto_next_level()
+                    self.emit_play_next_level_signal()
         else:
             user_decision = self.show_losing_screen()
             if user_decision == QtWidgets.QMessageBox.DestructiveRole:
-                self.goto_level_selection()
+                self.emit_level_menu_signal()
             elif user_decision == QtWidgets.QMessageBox.AcceptRole:
-                self.goto_game_menu()
+                self.emit_game_menu_signal()
             elif user_decision == QtWidgets.QMessageBox.RejectRole:
-                self.goto_play_level_again()
+                self.emit_play_level_again_signal()
         self.game_database.save_user_data()
 
     def show_solution(self):

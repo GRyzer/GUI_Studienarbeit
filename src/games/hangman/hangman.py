@@ -104,8 +104,8 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
         # TODO: adapt that it is possible to implement the method in the interface
         for button in self.alphabet_button_list:
             button.clicked.connect(partial(self.update_game, button.text()))
-        self.game_menu_button.clicked.connect(self.goto_game_menu)
-        self.level_selection_button.clicked.connect(self.goto_level_selection)
+        self.game_menu_button.clicked.connect(self.emit_game_menu_signal)
+        self.level_selection_button.clicked.connect(self.emit_level_menu_signal)
 
     def update_game(self, letter):
         if self.letter_not_in_searched_word(letter):
@@ -156,21 +156,21 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
             self.update_values()
             if self.selected_level == self.max_level:
                 self.show_every_level_completed()
-                self.goto_game_menu()
+                self.emit_game_menu_signal()
             else:
                 self.unlock_next_level(self.selected_level)
                 user_decision = self.show_selection_for_next_game()
                 if user_decision == QtWidgets.QMessageBox.AcceptRole:
-                    self.goto_game_menu()
+                    self.emit_game_menu_signal()
                 elif user_decision == QtWidgets.QMessageBox.RejectRole:
-                    self.goto_next_level()
+                    self.emit_play_next_level_signal()
         else:
             text = f"Unfortunately you lost! The searched word was: {self.searched_word}"
             user_decision = self.show_losing_screen(text)
             if user_decision == QtWidgets.QMessageBox.DestructiveRole:
-                self.goto_level_selection()
+                self.emit_level_menu_signal()
             elif user_decision == QtWidgets.QMessageBox.AcceptRole:
-                self.goto_game_menu()
+                self.emit_game_menu_signal()
             elif user_decision == QtWidgets.QMessageBox.RejectRole:
-                self.goto_play_level_again()
+                self.emit_play_level_again_signal()
         self.game_database.save_user_data()

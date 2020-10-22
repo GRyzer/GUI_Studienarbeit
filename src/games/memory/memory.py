@@ -33,7 +33,7 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
         text = f"Required points for this round are: {self.required_points}\nDo you want to start?"
         user_decision = self.show_start_screen(text)
         if user_decision == QtWidgets.QMessageBox.RejectRole:
-            self.goto_game_menu()
+            self.emit_game_menu_signal()
 
     def initialize_game(self, selected_level):
         self.achieved_points = 0
@@ -59,8 +59,8 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
             element.set_icon_path(icon_path)
 
     def connect_buttons_to_game(self):
-        self.game_menu_button.clicked.connect(self.goto_game_menu)
-        self.level_selection_button.clicked.connect(self.goto_level_selection)
+        self.game_menu_button.clicked.connect(self.emit_game_menu_signal)
+        self.level_selection_button.clicked.connect(self.emit_level_menu_signal)
         self.button_manager.buttonClicked.connect(self.check_round)
 
     def update_moves(self):
@@ -115,24 +115,24 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
         if self.achieved_points >= self.required_points:
             if self.selected_level == self.max_level:
                 self.show_every_level_completed()
-                self.goto_game_menu()
+                self.emit_game_menu_signal()
             else:
                 self.unlock_next_level(self.selected_level)
                 text = f"Congratulation you won!\nYou scored {self.achieved_points} points in " \
                        f"{self.moves} moves"
                 user_decision = self.show_selection_for_next_game(text)
                 if user_decision == QtWidgets.QMessageBox.AcceptRole:
-                    self.goto_game_menu()
+                    self.emit_game_menu_signal()
                 elif user_decision == QtWidgets.QMessageBox.RejectRole:
-                    self.goto_next_level()
+                    self.emit_play_next_level_signal()
         else:
             text = f"Unfortunately you lost! You scored only {self.achieved_points} points. Required points were: " \
                    f"{self.required_point}!"
             user_decision = self.show_losing_screen(text)
             if user_decision == QtWidgets.QMessageBox.DestructiveRole:
-                self.goto_level_selection()
+                self.emit_level_menu_signal()
             elif user_decision == QtWidgets.QMessageBox.AcceptRole:
-                self.goto_game_menu()
+                self.emit_game_menu_signal()
             elif user_decision == QtWidgets.QMessageBox.RejectRole:
-                self.goto_play_level_again()
+                self.emit_play_level_again_signal()
         self.game_database.save_user_data()

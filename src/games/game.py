@@ -2,10 +2,10 @@ from PyQt5 import QtCore, QtWidgets
 
 
 class Game:
-    game_menu_window = QtCore.pyqtSignal()
-    level_menu = QtCore.pyqtSignal()
-    next_level = QtCore.pyqtSignal(int)
-    play_level_again = QtCore.pyqtSignal(int)
+    game_menu_signal = QtCore.pyqtSignal()
+    level_menu_signal = QtCore.pyqtSignal()
+    play_next_level_signal = QtCore.pyqtSignal(int)
+    play_level_again_signal = QtCore.pyqtSignal(int)
 
     def __init__(self, game_database, level):
         self.game_database = game_database
@@ -14,18 +14,18 @@ class Game:
     def get_unlocked_level(self):
         return self.game_database.get_unlocked_level()
 
-    def goto_game_menu(self):
-        self.game_menu_window.emit()
+    def emit_game_menu_signal(self):
+        self.game_menu_signal.emit()
 
-    def goto_level_selection(self):
-        self.level_menu.emit()
+    def emit_level_menu_signal(self):
+        self.level_menu_signal.emit()
 
-    def goto_next_level(self):
+    def emit_play_next_level_signal(self):
         if self.selected_level + 1 <= self.get_unlocked_level():
-            self.next_level.emit(self.selected_level + 1)
+            self.play_next_level_signal.emit(self.selected_level + 1)
 
-    def goto_play_level_again(self):
-        self.play_level_again.emit(self.selected_level)
+    def emit_play_level_again_signal(self):
+        self.play_level_again_signal.emit(self.selected_level)
 
     @staticmethod
     def show_every_level_completed():
