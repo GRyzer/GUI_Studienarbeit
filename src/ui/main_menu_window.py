@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.ui.form_widget import BaseFormWidget
+from src.ui.base_form_widget import BaseFormWidget
 
 
 class FormWidget(BaseFormWidget):
@@ -87,19 +87,19 @@ class FormWidget(BaseFormWidget):
 
 
 class MainMenu(QtWidgets.QWidget, FormWidget):
-    game_menu_window = QtCore.pyqtSignal()
-    log_in_window = QtCore.pyqtSignal()
-    signup_window = QtCore.pyqtSignal()
+    game_menu_signal = QtCore.pyqtSignal()
+    log_in_signal = QtCore.pyqtSignal()
+    signup_signal = QtCore.pyqtSignal()
 
     def __init__(self):
         super(MainMenu, self).__init__()
         self.setupUi(self)
-        self.next_window_button.clicked.connect(self.go_to_next_window)
+        self.next_window_button.clicked.connect(self.emit_selected_window_signal)
 
-    def go_to_next_window(self):
+    def emit_selected_window_signal(self):
         if self.sign_up_rbutton.isChecked():
-            self.signup_window.emit()
+            self.signup_signal.emit()
         elif self.log_in_rbutton.isChecked():
-            self.log_in_window.emit()
+            self.log_in_signal.emit()
         elif self.anonymous_rbutton.isChecked():
-            self.game_menu_window.emit()
+            self.game_menu_signal.emit()

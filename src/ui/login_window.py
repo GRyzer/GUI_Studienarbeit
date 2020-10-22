@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.ui.form_widget import BaseFormWidget
+from src.ui.base_form_widget import BaseFormWidget
 
 
 class FormWidget(BaseFormWidget):
@@ -92,20 +92,20 @@ class FormWidget(BaseFormWidget):
 
 
 class LogInWindow(QtWidgets.QWidget, FormWidget):
-    next_window = QtCore.pyqtSignal(str)
-    previous_window = QtCore.pyqtSignal()
+    next_window_signal = QtCore.pyqtSignal(str)
+    previous_window_signal = QtCore.pyqtSignal()
 
     def __init__(self, account):
         super(LogInWindow, self).__init__()
         self.account = account
         self.setupUi(self)
-        self.next_window_button.clicked.connect(self.go_to_next_window)
-        self.previous_window_button.clicked.connect(self.go_to_previous_window)
+        self.next_window_button.clicked.connect(self.emit_next_window_signal)
+        self.previous_window_button.clicked.connect(self.emit_previous_window_signal)
 
-    def go_to_next_window(self):
+    def emit_next_window_signal(self):
         try:
             self.account.check_credentials(self.username_line_edit.text(), self.password_line_edit.text())
-            self.next_window.emit(self.username_line_edit.text())
+            self.next_window_signal.emit(self.username_line_edit.text())
         except ValueError as e:
             msg_box = QtWidgets.QMessageBox()
             msg_box.setIcon(QtWidgets.QMessageBox.Warning)
@@ -114,5 +114,5 @@ class LogInWindow(QtWidgets.QWidget, FormWidget):
             msg_box.setStandardButtons(QtWidgets.QMessageBox.Ok)
             msg_box.exec()
 
-    def go_to_previous_window(self):
-        self.previous_window.emit()
+    def emit_previous_window_signal(self):
+        self.previous_window_signal.emit()

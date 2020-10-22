@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.ui.form_widget import BaseFormWidget
+from src.ui.base_form_widget import BaseFormWidget
 
 
 class FormWidget(BaseFormWidget):
@@ -88,23 +88,23 @@ class FormWidget(BaseFormWidget):
 
 
 class LevelWindow(QtWidgets.QWidget, FormWidget):
-    next_window = QtCore.pyqtSignal(int)
-    previous_window = QtCore.pyqtSignal()
+    next_window_signal = QtCore.pyqtSignal(int)
+    previous_window_signal = QtCore.pyqtSignal()
     unlock_all_levels_signal = QtCore.pyqtSignal()
 
     def __init__(self, username, unlocked_level_number):
         super(LevelWindow, self).__init__()
         self.setupUi(self, username, unlocked_level_number)
         self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+U"), self)
-        self.next_window_button.clicked.connect(self.go_to_game)
-        self.previous_window_button.clicked.connect(self.go_to_previous_window)
+        self.next_window_button.clicked.connect(self.emit_next_window_signal)
+        self.previous_window_button.clicked.connect(self.emit_previous_window_signal)
         self.shortcut.activated.connect(self.unlock_all_levels)
 
-    def go_to_game(self):
-        self.next_window.emit(self.radio_button_group.checkedId())
+    def emit_next_window_signal(self):
+        self.next_window_signal.emit(self.radio_button_group.checkedId())
 
-    def go_to_previous_window(self):
-        self.previous_window.emit()
+    def emit_previous_window_signal(self):
+        self.previous_window_signal.emit()
 
     def unlock_all_levels(self):
         self.make_all_rbuttons_checkable()

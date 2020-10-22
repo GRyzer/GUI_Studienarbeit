@@ -3,7 +3,7 @@ import string
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.ui.form_widget import BaseFormWidget
+from src.ui.base_form_widget import BaseFormWidget
 
 
 class FormWidget(BaseFormWidget):

@@ -3,11 +3,11 @@ import sys
 from PyQt5.QtWidgets import QApplication
 
 from src.database_managers.account_management import AccountManagement
-from src.ui.game_menu_page import GameMenuWindow
+from src.ui.game_menu_window import GameMenuWindow
 from src.game_controller.game_controller import GameController
-from src.ui.login_page import LogInWindow
-from src.ui.main_menu_page import MainMenu
-from src.ui.sign_up_page import SignUpWindow
+from src.ui.login_window import LogInWindow
+from src.ui.main_menu_window import MainMenu
+from src.ui.sign_up_window import SignUpWindow
 
 
 class GameLauncher:
@@ -21,9 +21,9 @@ class GameLauncher:
 
     def show_main_menu_window(self):
         self.main_menu_window = MainMenu()
-        self.main_menu_window.game_menu_window.connect(self.show_game_menu_window)
-        self.main_menu_window.log_in_window.connect(self.show_login_window)
-        self.main_menu_window.signup_window.connect(self.show_signup_window)
+        self.main_menu_window.game_menu_signal.connect(self.show_game_menu_window)
+        self.main_menu_window.log_in_signal.connect(self.show_login_window)
+        self.main_menu_window.signup_signal.connect(self.show_signup_window)
         if self.game_menu_window is not None:
             self.game_menu_window.hide()
         if self.login_window is not None:
@@ -34,8 +34,8 @@ class GameLauncher:
 
     def show_signup_window(self):
         self.signup_window = SignUpWindow(self.account)
-        self.signup_window.next_window.connect(self.show_game_menu_window)
-        self.signup_window.previous_window.connect(self.show_main_menu_window)
+        self.signup_window.next_window_signal.connect(self.show_game_menu_window)
+        self.signup_window.previous_window_signal.connect(self.show_main_menu_window)
         if self.login_window is not None:
             self.login_window.hide()
         self.main_menu_window.hide()
@@ -43,8 +43,8 @@ class GameLauncher:
 
     def show_login_window(self):
         self.login_window = LogInWindow(self.account)
-        self.login_window.next_window.connect(self.show_game_menu_window)
-        self.login_window.previous_window.connect(self.show_main_menu_window)
+        self.login_window.next_window_signal.connect(self.show_game_menu_window)
+        self.login_window.previous_window_signal.connect(self.show_main_menu_window)
         self.main_menu_window.hide()
         self.login_window.show()
 
@@ -52,8 +52,8 @@ class GameLauncher:
         if username is None:
             username = 'Anonymous'
         self.game_menu_window = GameMenuWindow(username=username)
-        self.game_menu_window.game_window.connect(self.start_selected_game)
-        self.game_menu_window.main_menu_window.connect(self.show_main_menu_window)
+        self.game_menu_window.game_signal.connect(self.start_selected_game)
+        self.game_menu_window.main_menu_signal.connect(self.show_main_menu_window)
         if self.login_window is not None:
             self.login_window.hide()
         if self.signup_window is not None:

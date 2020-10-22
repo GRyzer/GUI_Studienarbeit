@@ -2,16 +2,16 @@ from functools import partial
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.ui.form_widget import BaseFormWidget
+from src.ui.base_form_widget import BaseFormWidget
 from src.games.game_enum import Game
 
 
 class FormWidget(BaseFormWidget):
     def __init__(self):
         self.game_button_storage = []
-        self.gridLayout = None
+        self.grid_layout = None
         self.heading = None
-        self.horizontalLayout = None
+        self.horizontal_layout = None
         self.main_vertical_layout = None
         self.main_menu_button = None
         self.username_layout = None
@@ -44,8 +44,8 @@ class FormWidget(BaseFormWidget):
         self.heading.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.main_vertical_layout.addWidget(self.heading)
 
-        self.gridLayout = QtWidgets.QGridLayout()
-        self.gridLayout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
+        self.grid_layout = QtWidgets.QGridLayout()
+        self.grid_layout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
         # TODO: make game including more generic
         for row in range(0, 2):
             for column in range(1, 3):
@@ -55,28 +55,28 @@ class FormWidget(BaseFormWidget):
                 button.setFont(QtGui.QFont('', 14))
 
                 self.game_button_storage.append(button)
-                self.gridLayout.addWidget(button, row, column)
+                self.grid_layout.addWidget(button, row, column)
 
-        self.main_vertical_layout.addLayout(self.gridLayout)
+        self.main_vertical_layout.addLayout(self.grid_layout)
         spacer_up = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.main_vertical_layout.addItem(spacer_up)
 
-        self.horizontalLayout = QtWidgets.QHBoxLayout(game_menu_page)
-        self.horizontalLayout.setContentsMargins(-1, -1, -1, 10)
+        self.horizontal_layout = QtWidgets.QHBoxLayout(game_menu_page)
+        self.horizontal_layout.setContentsMargins(-1, -1, -1, 10)
 
         self.main_menu_button = QtWidgets.QPushButton('return to main menu', game_menu_page)
         self.main_menu_button.setSizePolicy(self.get_size_policy(self.main_menu_button))
         self.main_menu_button.setFont(QtGui.QFont('', 12))
-        self.horizontalLayout.addWidget(self.main_menu_button)
+        self.horizontal_layout.addWidget(self.main_menu_button)
 
-        self.main_vertical_layout.addLayout(self.horizontalLayout)
+        self.main_vertical_layout.addLayout(self.horizontal_layout)
 
         QtCore.QMetaObject.connectSlotsByName(game_menu_page)
 
 
 class GameMenuWindow(QtWidgets.QWidget, FormWidget):
-    game_window = QtCore.pyqtSignal(int, str)
-    main_menu_window = QtCore.pyqtSignal()
+    game_signal = QtCore.pyqtSignal(int, str)
+    main_menu_signal = QtCore.pyqtSignal()
 
     def __init__(self, username):
         super(GameMenuWindow, self).__init__()
@@ -86,11 +86,11 @@ class GameMenuWindow(QtWidgets.QWidget, FormWidget):
 
     def connect_buttons_to_game(self):
         for enum_value, button in enumerate(self.game_button_storage, 1):
-            button.clicked.connect(partial(self.go_to_game, Game(enum_value)))
-        self.main_menu_button.clicked.connect(self.go_to_main_menu)
+            button.clicked.connect(partial(self.emit_game_signal, Game(enum_value)))
+        self.main_menu_button.clicked.connect(self.emit_main_menu_signal)
 
-    def go_to_game(self, game_enum_number):
-        self.game_window.emit(game_enum_number.value, self.username)
+    def emit_game_signal(self, game_enum_number):
+        self.game_signal.emit(game_enum_number.value, self.username)
 
-    def go_to_main_menu(self):
-        self.main_menu_window.emit()
+    def emit_main_menu_signal(self):
+        self.main_menu_signal.emit()
