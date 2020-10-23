@@ -3,13 +3,13 @@ from PyQt5 import QtWidgets, QtCore
 from src.games.button_shooter import button_shooter
 from src.games.game_enum import Game
 from src.games.hangman import hangman
-from src.ui.level_page import LevelWindow
+from src.ui.level_window import LevelWindow
 from src.games.memory import memory
 from src.games.pattern_recognition import pattern_recognition
 
 
 class GameController(QtWidgets.QWidget):
-    game_menu_window = QtCore.pyqtSignal(str)
+    game_menu_signal = QtCore.pyqtSignal(str)
 
     def __init__(self, selected_game, username):
         super(GameController, self).__init__()
@@ -18,52 +18,50 @@ class GameController(QtWidgets.QWidget):
         self.selected_game = selected_game
         self.username = username
 
-    def start(self):
-        self.create_game()
-        self.goto_level_menu()
+    @staticmethod
+    def create_game(game_id, username):
+        if game_id == Game.Hangman.value:
+            return hangman.HangmanWindow(username)
+        elif game_id == Game.PatternRecognition.value:
+            return pattern_recognition.PatternRecognitionWindow(username)
+        elif game_id == Game.ButtonShooter.value:
+            return button_shooter.ButtonShooter(username)
+        elif game_id == Game.Memory.value:
+            return memory.MemoryWindow(username)
+        raise Exception(f"game id {game_id} does not exist!")
 
-    def start_again(self):
-        self.game.hide()
-        self.create_game()
-        self.goto_level_menu()
-
-    def create_game(self):
-        self.game = self.select_game()
-        self.game.game_menu_window.connect(self.goto_game_menu)
-        self.game.level_menu.connect(self.start_again)
-        self.game.next_level.connect(self.play_level)
-        self.game.play_level_again.connect(self.play_level)
-
-    def goto_game_menu(self):
+    def emit_game_menu_signal(self):
         self.level_window.hide()
         self.game.hide()
-        self.game_menu_window.emit(self.username)
+        self.game_menu_signal.emit(self.username)
 
-    def goto_level_menu(self):
+    def start_the_game(self, level=None):
+        self.game = self.create_game(self.selected_game, self.username)
+        self._connect_signals_to_game(self.game)
+        if level is None:
+            self.show_level_page()
+        else:
+            self.game.hide()
+            self.level_window.hide()
+            self._play_selected_level(level)
+
+    def _connect_signals_to_game(self, game):
+        game.game_menu_signal.connect(self.emit_game_menu_signal)
+        game.level_menu_signal.connect(self.show_level_page)
+        game.play_next_level_signal.connect(self.start_again)
+        game.play_level_again_signal.connect(self.start_again)
+
+    def show_level_page(self):
         self.game.hide()
         self.level_window = LevelWindow(self.username, self.game.get_unlocked_level())
-        self.level_window.previous_window.connect(self.goto_game_menu)
-        self.level_window.next_window.connect(self.start_game)
+        self.level_window.previous_window_signal.connect(self.emit_game_menu_signal)
+        self.level_window.next_window_signal.connect(self.start_the_game)
         self.level_window.unlock_all_levels_signal.connect(self.game.unlock_all_levels)
         self.level_window.show()
 
-    def start_game(self, level):
-        self.level_window.hide()
+    def _play_selected_level(self, level):
         self.game.play_game(level)
 
-    def select_game(self):
-        game = None
-        if self.selected_game == Game.Hangman.value:
-            game = hangman.HangmanWindow(self.username)
-        elif self.selected_game == Game.PatternRecognition.value:
-            game = pattern_recognition.PatternRecognitionWindow(self.username)
-        elif self.selected_game == Game.ButtonShooter.value:
-            game = button_shooter.ButtonShooter(self.username)
-        elif self.selected_game == Game.Memory.value:
-            game = memory.MemoryWindow(self.username)
-        return game
-
-    def play_level(self, level):
+    def start_again(self, level):
         self.game.hide()
-        self.create_game()
-        self.game.play_game(level)
+        self.start_the_game(level)
