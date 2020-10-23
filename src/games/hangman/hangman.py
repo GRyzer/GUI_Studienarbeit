@@ -1,6 +1,8 @@
 
 from functools import partial
 from itertools import chain
+import random
+import pickle
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 import random_word
@@ -82,16 +84,9 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
 
     @staticmethod
     def get_searched_word():
-        # alternative method described here: https://github.com/vaibhavsingh97/random-word/issues/32
-        r = random_word.RandomWords()
-        while True:
-            try:
-                word = r.get_random_word()
-                if word.isalpha():
-                    break
-            except Exception:
-                print("exception occurred finding a word")
-        return word.upper()
+        with open("src/games/hangman/word_list.data", "rb") as file_handle:
+            word_list = pickle.load(file_handle)
+        return random.choice(word_list).upper()
 
     @staticmethod
     def get_blanked_word(word):
@@ -160,11 +155,13 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
             else:
                 self.unlock_next_level(self.selected_level)
                 user_decision = self.show_selection_for_next_game()
+                self.game_database.save_user_data()
                 if user_decision == QtWidgets.QMessageBox.AcceptRole:
                     self.emit_game_menu_signal()
                 elif user_decision == QtWidgets.QMessageBox.RejectRole:
                     self.emit_play_next_level_signal()
         else:
+            self.game_database.save_user_data()
             text = f"Unfortunately you lost! The searched word was: {self.searched_word}"
             user_decision = self.show_losing_screen(text)
             if user_decision == QtWidgets.QMessageBox.DestructiveRole:
@@ -173,4 +170,3 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
                 self.emit_game_menu_signal()
             elif user_decision == QtWidgets.QMessageBox.RejectRole:
                 self.emit_play_level_again_signal()
-        self.game_database.save_user_data()

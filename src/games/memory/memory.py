@@ -121,11 +121,13 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
                 text = f"Congratulation you won!\nYou scored {self.achieved_points} points in " \
                        f"{self.moves} moves"
                 user_decision = self.show_selection_for_next_game(text)
+                self.game_database.save_user_data()
                 if user_decision == QtWidgets.QMessageBox.AcceptRole:
                     self.emit_game_menu_signal()
                 elif user_decision == QtWidgets.QMessageBox.RejectRole:
                     self.emit_play_next_level_signal()
         else:
+            self.game_database.save_user_data()
             text = f"Unfortunately you lost! You scored only {self.achieved_points} points. Required points were: " \
                    f"{self.required_point}!"
             user_decision = self.show_losing_screen(text)
@@ -135,4 +137,4 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
                 self.emit_game_menu_signal()
             elif user_decision == QtWidgets.QMessageBox.RejectRole:
                 self.emit_play_level_again_signal()
-        self.game_database.save_user_data()
+

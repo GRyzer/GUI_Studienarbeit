@@ -116,11 +116,13 @@ class PatternRecognitionWindow(Game, FormWidget, QtWidgets.QWidget):
             else:
                 self.unlock_next_level(self.selected_level)
                 user_decision = self.show_selection_for_next_game()
+                self.game_database.save_user_data()
                 if user_decision == QtWidgets.QMessageBox.AcceptRole:
                     self.emit_game_menu_signal()
                 elif user_decision == QtWidgets.QMessageBox.RejectRole:
                     self.emit_play_next_level_signal()
         else:
+            self.game_database.save_user_data()
             user_decision = self.show_losing_screen()
             if user_decision == QtWidgets.QMessageBox.DestructiveRole:
                 self.emit_level_menu_signal()
@@ -128,7 +130,6 @@ class PatternRecognitionWindow(Game, FormWidget, QtWidgets.QWidget):
                 self.emit_game_menu_signal()
             elif user_decision == QtWidgets.QMessageBox.RejectRole:
                 self.emit_play_level_again_signal()
-        self.game_database.save_user_data()
 
     def show_solution(self):
         for button in self.program_selected_buttons:

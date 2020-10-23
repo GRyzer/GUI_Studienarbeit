@@ -19,7 +19,7 @@ class FormWidget(BaseFormWidget):
     def setupUi(self, memory_page, color, selected_level):
         memory_page.setMinimumSize(self.get_min_widget())
         memory_page.setMaximumSize(self.get_max_widget())
-        memory_page.setWindowTitle(f"Memory, Level {selected_level}")
+        memory_page.setWindowTitle(f"PatternRecognition, Level {selected_level}")
         memory_page.resize(QtCore.QSize(800, 800))
 
         self.main_vertical_layout = QtWidgets.QVBoxLayout(memory_page)
