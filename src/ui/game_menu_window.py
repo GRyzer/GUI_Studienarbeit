@@ -46,7 +46,6 @@ class FormWidget(BaseFormWidget):
 
         self.grid_layout = QtWidgets.QGridLayout()
         self.grid_layout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
-        # TODO: make game including more generic
         for row in range(0, 2):
             for column in range(1, 3):
                 button = QtWidgets.QPushButton(f"{Game(2 * row + column).name}", game_menu_page)

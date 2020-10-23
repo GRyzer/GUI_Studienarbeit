@@ -5,7 +5,6 @@ from src.ui.base_form_widget import BaseFormWidget
 
 class FormWidget(BaseFormWidget):
     def __init__(self):
-        self.anonymous_rbutton = None
         self.form_layout = None
         self.heading = None
         self.horizontal_layout = None
@@ -47,11 +46,6 @@ class FormWidget(BaseFormWidget):
         spacer_left = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.radio_buttons_layout.addItem(spacer_left)
 
-        self.anonymous_rbutton = QtWidgets.QRadioButton("Anonymous", main_window)
-        self.anonymous_rbutton.setChecked(True)
-        self.anonymous_rbutton.setSizePolicy(self.get_size_policy(self.anonymous_rbutton))
-        self.radio_buttons_layout.addWidget(self.anonymous_rbutton, alignment=QtCore.Qt.AlignCenter)
-
         self.log_in_rbutton = QtWidgets.QRadioButton("Log in", main_window)
         self.log_in_rbutton.setSizePolicy(self.get_size_policy(self.log_in_rbutton))
         self.radio_buttons_layout.addWidget(self.log_in_rbutton, alignment=QtCore.Qt.AlignCenter)
@@ -87,7 +81,6 @@ class FormWidget(BaseFormWidget):
 
 
 class MainMenu(QtWidgets.QWidget, FormWidget):
-    game_menu_signal = QtCore.pyqtSignal()
     log_in_signal = QtCore.pyqtSignal()
     signup_signal = QtCore.pyqtSignal()
 
@@ -101,5 +94,3 @@ class MainMenu(QtWidgets.QWidget, FormWidget):
             self.signup_signal.emit()
         elif self.log_in_rbutton.isChecked():
             self.log_in_signal.emit()
-        elif self.anonymous_rbutton.isChecked():
-            self.game_menu_signal.emit()
