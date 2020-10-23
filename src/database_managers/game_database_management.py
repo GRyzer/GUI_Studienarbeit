@@ -49,9 +49,7 @@ class GameDatabaseManagement:
         return self.user_df.to_dict('index')[self.username]
 
     def save_user_data(self):
-        if self.username == 'Anonymous':
-            return None
-        elif self.user_df.index.values[0] in self.df.index.values:
+        if self.user_df.index.values[0] in self.df.index.values:
             self.df.update(self.user_df)
         else:
             self.df = self.df.append(self.user_df)

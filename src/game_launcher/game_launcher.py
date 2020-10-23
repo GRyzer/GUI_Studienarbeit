@@ -33,7 +33,6 @@ class GameLauncher:
 
     def show_main_menu_window(self):
         self.main_menu_window = MainMenu()
-        self.main_menu_window.game_menu_signal.connect(self.show_game_menu_window)
         self.main_menu_window.log_in_signal.connect(self.show_login_window)
         self.main_menu_window.signup_signal.connect(self.show_signup_window)
         if self.game_menu_window is not None:
@@ -60,9 +59,7 @@ class GameLauncher:
         self.main_menu_window.hide()
         self.login_window.show()
 
-    def show_game_menu_window(self, username=None):
-        if username is None:
-            username = 'Anonymous'
+    def show_game_menu_window(self, username):
         self.game_menu_window = GameMenuWindow(username=username)
         self.game_menu_window.game_signal.connect(self.start_selected_game)
         self.game_menu_window.main_menu_signal.connect(self.show_main_menu_window)
@@ -77,7 +74,7 @@ class GameLauncher:
         self.game_controller = GameController(selected_game, username)
         self.game_controller.game_menu_signal.connect(self.show_game_menu_window)
         self.game_menu_window.hide()
-        self.game_controller.start()
+        self.game_controller.start_the_game()
 
 
 if __name__ == '__main__':
