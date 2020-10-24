@@ -39,7 +39,7 @@ class GameController(QtWidgets.QWidget):
         self.game = self.create_game(self.selected_game, self.username)
         self._connect_signals_to_game(self.game)
         if level is None:
-            self.show_level_page()
+            self.select_level()
         else:
             self.game.hide()
             self.level_window.hide()
@@ -47,11 +47,11 @@ class GameController(QtWidgets.QWidget):
 
     def _connect_signals_to_game(self, game):
         game.game_menu_signal.connect(self.emit_game_menu_signal)
-        game.level_menu_signal.connect(self.show_level_page)
+        game.level_menu_signal.connect(self.select_level)
         game.play_next_level_signal.connect(self.start_again)
         game.play_level_again_signal.connect(self.start_again)
 
-    def show_level_page(self):
+    def select_level(self):
         self.game.hide()
         self.level_window = LevelWindow(self.username, self.game.get_unlocked_level())
         self.level_window.previous_window_signal.connect(self.emit_game_menu_signal)
