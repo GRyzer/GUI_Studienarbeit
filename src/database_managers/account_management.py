@@ -3,7 +3,7 @@ import pandas as pd
 
 
 class AccountManagement:
-    header = ["username", "password", "age", "gender"]
+    header = ["username", "password", "age", "gender", "security_query"]
 
     def __init__(self):
         self.file_path = "src/databases/accounts_database.csv"
@@ -39,3 +39,16 @@ class AccountManagement:
 
     def get_user(self, username):
         return self.df.loc[self.df["username"] == username]
+
+    def reset_account(self, username, security_query, password):
+        user_account = self.get_user(username)
+        if user_account.empty:
+            raise ValueError("User does not exist!")
+        if user_account["security_query"].item() != security_query:
+            raise ValueError("Wrong answer to security query.")
+        user_account["password"] = password
+        self.df.update(user_account)
+        self.df.to_csv(self.file_path, index=False)
+
+
+

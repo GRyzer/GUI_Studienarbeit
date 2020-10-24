@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 from src.ui.base_form_widget import BaseFormWidget
-from src.ui.validators import UsernameValidator, PasswordValidator
+from src.ui.validators import UsernameValidator, PasswordValidator, SecurityQueryValidator
 
 
 class FormWidget(BaseFormWidget):
@@ -103,6 +103,22 @@ class FormWidget(BaseFormWidget):
         self.combo_box.setCurrentText("male")
         self.form_layout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.combo_box)
 
+        self.label5 = QtWidgets.QLabel("Security query", signup_page)
+        self.label5.setFont(QtGui.QFont('', 16))
+        self.label5.setAlignment(QtCore.Qt.AlignCenter)
+        self.form_layout.setWidget(4, QtWidgets.QFormLayout.LabelRole, self.label5)
+
+        self.security_line_edit = QtWidgets.QLineEdit(signup_page)
+        self.security_line_edit.setValidator(SecurityQueryValidator())
+        self.security_line_edit.setPlaceholderText("Enter your favorite song")
+        self.security_line_edit.setSizePolicy(self.get_size_policy(self.security_line_edit,
+                                                                   QtWidgets.QSizePolicy.Expanding,
+                                                                   QtWidgets.QSizePolicy.Preferred))
+        self.security_line_edit.setFont(QtGui.QFont('', 16))
+        self.security_line_edit.setToolTip("If you will forget your password, you can restore "
+                                           "your account with your answer.")
+        self.form_layout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.security_line_edit)
+
         self.horizontal_layout = QtWidgets.QHBoxLayout(signup_page)
 
         self.form_layout2 = QtWidgets.QFormLayout(signup_page)
@@ -157,10 +173,12 @@ class SignUpWindow(QtWidgets.QWidget, FormWidget):
 
     def validate_credentials(self):
         if not self.username_line_edit.hasAcceptableInput():
-            raise ValueError(f'Username is not valid')
+            raise ValueError(f'Username is not valid.')
         if not self.password_line_edit.hasAcceptableInput():
-            raise ValueError(f'Password is not valid')
+            raise ValueError(f'Password is not valid.')
+        if not self.security_line_edit.hasAcceptableInput():
+            raise ValueError(f'Security Query is empty.')
 
     def add_user_account(self):
         self.account.add_account([self.username_line_edit.text(), self.password_line_edit.text(), self.spin_box.value(),
-                                  self.combo_box.currentText()])
+                                  self.combo_box.currentText(), self.security_line_edit.text()])
