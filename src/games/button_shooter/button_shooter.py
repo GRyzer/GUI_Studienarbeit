@@ -7,8 +7,8 @@ from src.database_managers.game_database_management import GameDatabaseManagemen
 from src.games.game import Game
 
 
-class ButtonShooter(Game, FormWidget, QtWidgets.QWidget):
-    database_path = "databases/button_shooter.csv"
+class ButtonShooterWindow(Game, FormWidget, QtWidgets.QWidget):
+    database_path = "src/databases/button_shooter.csv"
     header = ["unlocked_level", "hit_targets"]
     default_values = [1, 0]
     max_level = 20

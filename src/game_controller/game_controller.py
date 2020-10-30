@@ -25,7 +25,7 @@ class GameController(QtWidgets.QWidget):
         elif game_id == Game.PatternRecognition.value:
             return pattern_recognition.PatternRecognitionWindow(username)
         elif game_id == Game.ButtonShooter.value:
-            return button_shooter.ButtonShooter(username)
+            return button_shooter.ButtonShooterWindow(username)
         elif game_id == Game.Memory.value:
             return memory.MemoryWindow(username)
         raise Exception(f"game id {game_id} does not exist!")
