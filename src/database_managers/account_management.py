@@ -34,7 +34,7 @@ class AccountManagement:
         user_account = self.get_user(username)
         if user_account.empty:
             raise ValueError("User does not exist!")
-        if user_account.password.values[0] != password:
+        if str(user_account.password.values[0]) != password:
             raise ValueError("Wrong Password")
 
     def get_user(self, username):
