@@ -88,14 +88,6 @@ class TestDatabase(unittest.TestCase):
         self.assertTrue(expected_data == self.database.get_values())
 
     def test_save_user_data(self):
-        username = "Anonymous"
-        new_database = GameDatabaseManagement(self.file_name, username, self.header)
-        new_database.initialize_user_account(self.default_data)
-        new_database.save_user_data()
-        expected_df = pd.DataFrame(data=None, columns=self.header)
-        self.assertTrue(expected_df.equals(new_database.df))
-
-    def test_save_user_data2(self):
         self.database.initialize_user_account(self.default_data)
         self.database.save_user_data()
         expected_df = pd.DataFrame(data=[self.default_data], columns=self.header, index=[self.username])
