@@ -1,5 +1,5 @@
 from functools import partial
-from random import sample, shuffle
+import random
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 
@@ -13,6 +13,7 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
     header = ["unlocked_level", "achieved_points"]
     default_values = [1, 0]
     max_level = 20
+    memory_card_pairs = 18
 
     def __init__(self, username):
         QtWidgets.QWidget.__init__(self)
@@ -46,17 +47,17 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
         self.connect_buttons_to_game()
 
     def set_memory_images(self):
-        random_number_list = [number//2 for number in range(2, 38)]
-        icon_paths = sample(range(1, 26), 18)
-        dictionary = {}
-        for number in range(1, 19):
-            dictionary[number] = icon_paths.pop(0)
-        shuffle(random_number_list)
-        for element in self.button_manager.buttons():
-            image_number = random_number_list.pop(0)
-            icon_path = f"src/assets/memory/icon{dictionary[image_number]}"
-            element.set_image_number(image_number)
-            element.set_icon_path(icon_path)
+        icon_numbers: list = random.sample(range(1, 26), MemoryWindow.memory_card_pairs)
+        memory_card_icon_numbers = {}
+        for id in range(1, MemoryWindow.memory_card_pairs + 1):
+            memory_card_icon_numbers[id] = icon_numbers.pop(0)
+        memory_card_ids = [number // 2 for number in range(2, 2 * MemoryWindow.memory_card_pairs + 2)]
+        random.shuffle(memory_card_ids)
+        for memory_card in self.button_manager.buttons():
+            id = memory_card_ids.pop(0)
+            icon_path = f"src/assets/memory/icon{memory_card_icon_numbers[id]}"
+            memory_card.set_id(id)
+            memory_card.set_icon_path(icon_path)
 
     def connect_buttons_to_game(self):
         self.game_menu_button.clicked.connect(self.emit_game_menu_signal)
@@ -129,7 +130,7 @@ class MemoryWindow(Game, FormWidget, QtWidgets.QWidget):
         else:
             self.game_database.save_user_data()
             text = f"Unfortunately you lost! You scored only {self.achieved_points} points. Required points were: " \
-                   f"{self.required_point}!"
+                   f"{self.required_points}!"
             user_decision = self.show_losing_screen(text)
             if user_decision == QtWidgets.QMessageBox.DestructiveRole:
                 self.emit_level_menu_signal()

@@ -8,7 +8,7 @@ class Button(QtWidgets.QPushButton):
     def __init__(self):
         super(Button, self).__init__()
         self.icon_path = None
-        self.image_number = None
+        self.id = None
         self.is_icon_displayed = False
         self.setFixedSize(Button.size, Button.size)
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -31,5 +31,5 @@ class Button(QtWidgets.QPushButton):
     def set_icon_path(self, icon_path):
         self.icon_path = icon_path
 
-    def set_image_number(self, number):
-        self.image_number = number
+    def set_id(self, id):
+        self.id = id
