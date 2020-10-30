@@ -96,7 +96,6 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
         return blank_word
 
     def connect_buttons_to_game(self):
-        # TODO: adapt that it is possible to implement the method in the interface
         for button in self.alphabet_button_list:
             button.clicked.connect(partial(self.update_game, button.text()))
         self.game_menu_button.clicked.connect(self.emit_game_menu_signal)
