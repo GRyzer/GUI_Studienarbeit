@@ -26,6 +26,10 @@ class GameLauncher:
             raise Exception("Only one instance of GameLauncher is allowed!")
 
     @staticmethod
+    def clear_instance():
+        GameLauncher.__instance__ = None
+
+    @staticmethod
     def get_instance():
         if not GameLauncher.__instance__:
             GameLauncher()
