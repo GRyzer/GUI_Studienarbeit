@@ -17,7 +17,7 @@ class ButtonManager(QtWidgets.QButtonGroup):
 
     @staticmethod
     def do_images_match(button1, button2):
-        if button1.image_number == button2.image_number:
+        if button1.id == button2.id:
             return True
         return False
 
