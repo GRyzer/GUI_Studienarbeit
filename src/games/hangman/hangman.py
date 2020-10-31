@@ -5,7 +5,6 @@ import random
 import pickle
 
 from PyQt5 import QtWidgets, QtCore, QtGui
-import random_word
 
 from src.games.hangman.form_widget import FormWidget
 from src.database_managers.game_database_management import GameDatabaseManagement
@@ -66,18 +65,17 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
     @staticmethod
     def get_hangman_picture_paths(trials):
         """
-        paths_by_level keys are related to method: get_trials
-        :param trials:
-        :return:
+        A selection of pictures which shall be shown.
+        paths_by_level: keys are related to method: get_trials
         """
         folder = "src/assets/hangman"
         picture_paths = [f"{folder}/hangman1.png", f"{folder}/hangman2.png", f"{folder}/hangman3.png",
                          f"{folder}/hangman4.png", f"{folder}/hangman5.png", f"{folder}/hangman6.png",
                          f"{folder}/hangman7.png", f"{folder}/hangman8.png", f"{folder}/hangman9.png",
                          f"{folder}/hangman10.png"]
-        paths_by_level = {6: list(chain([picture_paths[0]], picture_paths[1:5], [picture_paths[9]])),
-                          7: list(chain([picture_paths[0]], picture_paths[1:6], [picture_paths[9]])),
-                          8: list(chain([picture_paths[0]], picture_paths[1:7], [picture_paths[9]])),
+        paths_by_level = {6: list(chain([picture_paths[1]], picture_paths[3:6], [picture_paths[7]], [picture_paths[9]])),
+                          7: list(chain(picture_paths[0:2], picture_paths[3:6], [picture_paths[7]], [picture_paths[9]])),
+                          8: list(chain([picture_paths[0]], picture_paths[1:6], [picture_paths[7]], [picture_paths[9]])),
                           9: list(chain([picture_paths[0]], picture_paths[1:8], [picture_paths[9]])),
                           10: picture_paths}
         return paths_by_level[trials]
@@ -117,7 +115,7 @@ class HangmanWindow(Game, FormWidget, QtWidgets.QWidget):
     def update_hangman(self):
         self.trials_left -= 1
         self.trials_left_label.setText(f"Trials left: {self.trials_left}")
-        self.hangman_pic_label.setPixmap(QtGui.QPixmap(self.hangman_picture_list[-self.trials_left]))
+        self.hangman_pic_label.setPixmap(QtGui.QPixmap(self.hangman_picture_list[-self.trials_left-1]))
 
     def update_searched_word(self, letter):
         searched_word_list = list(self.searched_blank_word)
