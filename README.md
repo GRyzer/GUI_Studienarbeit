@@ -10,7 +10,7 @@ If there is a python2 installation, the commands might be different.
 It is important that python3 is used. I tested it with 3.7.
 No guarantee that it works with lower versions.
 
-# Interprete options for an IDE
+# Interpreter options in an IDE
 
 Path to start script: Studienarbeit/src/game_launcher/game_launcher.py
 Working directory: Studienarbeit (Everything is based on relative paths to Studienarbeit)
